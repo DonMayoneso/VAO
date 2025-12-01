@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VAO | DEEP CORE ACCESS</title>
+    <title>VAO</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <style>
@@ -61,41 +61,75 @@
         input[type="text"] { background: transparent; border: none; border-bottom: 2px solid var(--phosphor-dim); color: var(--phosphor-main); font-family: 'VT323', monospace; font-size: 1.5rem; width: 100%; outline: none; text-transform: uppercase; }
         input[type="text"]:focus { border-bottom: 2px solid var(--phosphor-main); }
 
-        /* --- WINDOWS --- */
+        /* --- BACKGROUND SYSTEM TEXT (POST LOGIN) --- */
+        #system-background-text {
+            position: absolute; top: 20%; left: 5%;
+            color: var(--phosphor-dim);
+            font-size: 2rem;
+            z-index: 5;
+            display: none;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .blink-text { animation: blink 1s infinite; }
+
+        /* --- WINDOWS (FIXED LAYOUT) --- */
         .window {
-            position: absolute; width: 420px; background-color: var(--window-bg); border: 2px solid var(--phosphor-main);
+            position: absolute; width: 450px; background-color: var(--window-bg); border: 2px solid var(--phosphor-main);
             box-shadow: 0 0 20px rgba(40, 224, 40, 0.2); display: none; flex-direction: column; z-index: 100;
         }
         .window-header { background: var(--phosphor-main); color: #000; padding: 5px 10px; cursor: none; display: flex; justify-content: space-between; font-weight: bold; text-transform: uppercase; }
-        .window-content { padding: 15px; display: flex; flex-direction: column; height: 320px; }
-        .chat-history { flex-grow: 1; overflow-y: auto; margin-bottom: 10px; border-bottom: 1px dashed var(--phosphor-dim); padding-right: 5px; }
+        
+        .window-content { 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            height: 400px; /* Aumentado un poco para más espacio */
+        }
+        
+        .chat-history { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            margin-bottom: 0; /* Controlado por el padding del contenedor de abajo */
+            padding-right: 5px; 
+        }
         .chat-history::-webkit-scrollbar { width: 5px; } .chat-history::-webkit-scrollbar-thumb { background: var(--phosphor-dim); }
+        
+        /* CONTENEDOR DE BOTONES (FIX) */
+        .chat-controls {
+            flex-shrink: 0; /* No encogerse nunca */
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--phosphor-dim); /* Separador visual */
+            display: flex;
+            justify-content: flex-end;
+        }
+
         .msg { margin-bottom: 15px; line-height: 1.2; font-size: 1.1rem; }
         .msg.iris { color: var(--phosphor-main); text-align: left; } .msg.user { color: #fff; text-align: right; }
         .sender { font-size: 0.8rem; opacity: 0.7; margin-bottom: 3px; }
-        .retro-btn { background: transparent; border: 1px solid var(--phosphor-main); color: var(--phosphor-main); font-family: 'VT323', monospace; padding: 5px 15px; cursor: none; font-size: 1rem; transition: all 0.2s; }
+        
+        .retro-btn { background: transparent; border: 1px solid var(--phosphor-main); color: var(--phosphor-main); font-family: 'VT323', monospace; padding: 8px 15px; cursor: none; font-size: 1rem; transition: all 0.2s; }
         .retro-btn:hover { background: var(--phosphor-main); color: #000; }
 
-        /* --- LOCKDOWN --- */
+        /* --- LOCKDOWN SCREEN (RESTAURADA) --- */
         #lockdown-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column;
             align-items: center; justify-content: center; border: 20px solid var(--alert-color); padding: 2rem;
         }
         .lockdown-title { color: var(--alert-color); font-size: 4rem; margin-bottom: 1rem; text-shadow: 0 0 15px var(--alert-color); animation: blink 0.2s infinite; font-weight: bold; }
-        .lockdown-msg { color: #fff; font-size: 1.6rem; margin-bottom: 3rem; text-align: center; max-width: 800px; line-height: 1.5; border: 1px solid var(--alert-color); padding: 20px; }
+        .lockdown-msg { 
+            color: #fff; font-size: 1.6rem; margin-bottom: 3rem; text-align: center; max-width: 800px; line-height: 1.5; border: 1px solid var(--alert-color); padding: 20px; 
+        }
         .highlight-red { color: var(--alert-color); font-weight: bold; text-transform: uppercase; }
+        
         .btn-retry { border: 2px solid var(--alert-color); color: var(--alert-color); padding: 15px 40px; font-size: 1.5rem; background: #110000; cursor: none; font-family: 'VT323', monospace; box-shadow: 0 0 10px var(--alert-color); }
         .btn-retry:hover { background: var(--alert-color); color: #000; }
 
-        /* --- DUAL CANVASES (NUEVO) --- */
-        .bg-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 3s ease-in-out; /* Transición suave al aparecer */
-        }
-        /* Capa 1: Matrix (Al fondo) */
+        /* --- DUAL CANVASES --- */
+        .bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 3s ease-in-out; }
         #matrix-canvas { z-index: 1; }
-        /* Capa 2: Neuronal (Al frente) */
-        #neural-canvas { z-index: 2; mix-blend-mode: screen; /* Mezcla para que brillen juntos */ }
+        #neural-canvas { z-index: 2; mix-blend-mode: screen; }
 
         @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100px; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -109,6 +143,12 @@
 
     <canvas id="matrix-canvas" class="bg-canvas"></canvas>
     <canvas id="neural-canvas" class="bg-canvas"></canvas>
+
+    <div id="system-background-text">
+        <span class="blink-text">> ESTABLECIENDO ENLACE CON SERVIDORES VAO...</span><br>
+        <span style="font-size: 1rem;">> DESENCRIPTANDO PAQUETES DE DATOS</span><br>
+        <span style="font-size: 1rem;">> ACCESO A LA RED NEURONAL: ACTIVO</span>
+    </div>
 
     <div id="lockdown-screen">
         <div class="lockdown-title">¡ALERTA FEDERAL!</div>
@@ -141,14 +181,14 @@
             <div id="login-msg" style="margin-top: 20px; min-height: 25px;"></div>
         </div>
 
-        <div id="iris-window" class="window" style="top: 20%; left: 50%;">
+        <div id="iris-window" class="window" style="top: 15%; left: 50%;">
             <div class="window-header" id="iris-header">
                 <span>CANAL_SEGURO_V2.0</span>
                 <div class="window-controls"><span id="btn-minimize">_</span></div>
             </div>
             <div class="window-content">
                 <div class="chat-history" id="chat-history"></div>
-                <div style="display: flex; justify-content: flex-end;">
+                <div class="chat-controls">
                     <button class="retro-btn" id="btn-reply">¿QUIÉN ERES?</button>
                 </div>
             </div>
@@ -156,6 +196,7 @@
     </div>
 
     <script>
+        // --- CONFIGURACIÓN ---
         const correctPassword = "HYPNOS MORFEO";
         const biosSequence = [
             { text: "VAO BIOS ACPI BIOS Revision 10.02", delay: 150 },
@@ -171,8 +212,13 @@
             { text: "Mounting File System...", delay: 500 },
             { text: "SYSTEM READY.", delay: 800 }
         ];
-        let attemptCount = 0; let chatStage = 0; const maxAttempts = 3;
 
+        let attemptCount = 0;
+        let chatStage = 0; 
+        let postLoginStage = 0; 
+        const maxAttempts = 3;
+
+        // --- DOM ELEMENTS ---
         const biosScreen = document.getElementById('bios-screen');
         const loginContainer = document.getElementById('login-container');
         const passInput = document.getElementById('password-input');
@@ -182,13 +228,14 @@
         const btnReply = document.getElementById('btn-reply');
         const lockdownScreen = document.getElementById('lockdown-screen');
         const customCursor = document.getElementById('custom-cursor');
+        const sysBgText = document.getElementById('system-background-text');
 
-        // CURSOR
+        // --- CURSOR ---
         document.addEventListener('mousemove', (e) => { customCursor.style.left = e.clientX + 'px'; customCursor.style.top = e.clientY + 'px'; });
         document.addEventListener('mousedown', () => { customCursor.style.transform = 'translate(-50%, -50%) scale(0.8)'; customCursor.style.backgroundColor = 'rgba(40, 224, 40, 0.4)'; });
         document.addEventListener('mouseup', () => { customCursor.style.transform = 'translate(-50%, -50%) scale(1)'; customCursor.style.backgroundColor = 'rgba(40, 224, 40, 0.1)'; });
 
-        // BIOS & LOGIN
+        // --- 1. BIOS ---
         async function runBios() {
             for (let line of biosSequence) {
                 await sleep(line.delay);
@@ -200,6 +247,7 @@
             await sleep(1000); biosScreen.style.display = 'none'; loginContainer.style.display = 'flex'; passInput.focus();
         }
 
+        // --- 2. LOGIN LOGIC ---
         passInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const val = passInput.value.toUpperCase().trim();
@@ -208,54 +256,144 @@
             }
         });
 
+        // --- LÓGICA DE FALLOS ---
         function handleFailure() {
             attemptCount++;
             loginMsg.style.color = "var(--alert-color)";
             loginMsg.innerHTML = `> ACCESO DENEGADO [CODE: 0x992]<br>> INTENTOS RESTANTES: ${maxAttempts - attemptCount}`;
-            if (attemptCount === 1) setTimeout(() => { openChatWithEffect(); }, 1200);
-            if (attemptCount >= 3) setTimeout(() => { triggerLockdown(); }, 1500);
+            
+            if (attemptCount === 1) {
+                setTimeout(() => { 
+                    irisWindow.style.display = 'flex';
+                    typeWriterMessage("Iris", "Veo que quieres descubrir la verdad.");
+                }, 1200);
+            }
+            else if (attemptCount === 2) {
+                setTimeout(() => {
+                    irisWindow.style.display = 'flex'; 
+                    typeWriterMessage("Iris", "¿Qué haces? La contraseña es HYPNOS MORFEO.");
+                }, 800);
+            }
+            else if (attemptCount >= 3) {
+                setTimeout(async () => {
+                    irisWindow.style.display = 'flex';
+                    await typeWriterMessage("Iris", "Eres un idiota.");
+                    await sleep(1500);
+                    triggerLockdown();
+                }, 800);
+            }
         }
+
         function triggerLockdown() { lockdownScreen.style.display = 'flex'; document.getElementById('main-wrapper').style.filter = 'blur(10px)'; }
 
-        // CHAT
-        function openChatWithEffect() { irisWindow.style.display = 'flex'; typeWriterMessage("Iris", "Veo que quieres descubrir la verdad."); }
+        // --- 3. CHAT SYSTEM ---
         async function typeWriterMessage(sender, text) {
-            const msgContainer = document.createElement('div'); msgContainer.classList.add('msg', sender === 'Iris' ? 'iris' : 'user');
+            const msgContainer = document.createElement('div');
+            msgContainer.classList.add('msg', sender === 'Iris' ? 'iris' : 'user');
             msgContainer.innerHTML = `<div class="sender">< ${sender} ></div><span class="text-content"></span>`;
-            chatHistory.appendChild(msgContainer); const textSpan = msgContainer.querySelector('.text-content');
-            for (let char of text) { textSpan.innerHTML += char; await sleep(30); chatHistory.scrollTop = chatHistory.scrollHeight; }
+            chatHistory.appendChild(msgContainer); 
+            const textSpan = msgContainer.querySelector('.text-content');
+            for (let char of text) { 
+                textSpan.innerHTML += char; 
+                await sleep(30); 
+                chatHistory.scrollTop = chatHistory.scrollHeight; 
+            }
         }
+
+        function addUserMessage(text) { 
+            const msg = document.createElement('div'); 
+            msg.className = 'msg user'; 
+            msg.innerHTML = `<div class="sender">< TÚ ></div>${text}`; 
+            chatHistory.appendChild(msg); 
+            chatHistory.scrollTop = chatHistory.scrollHeight; 
+        }
+
+        // CONTROLADOR DEL BOTÓN DE RESPUESTA
         btnReply.addEventListener('click', async () => {
-            if (chatStage === 0) {
-                addUserMessage("¿Quién eres?"); btnReply.style.display = 'none';
-                await sleep(800); await typeWriterMessage("Iris", "Eso no es lo importante.");
-                await sleep(500); await typeWriterMessage("Iris", "Escribe: HYPNOS MORFEO");
-                btnReply.textContent = "EXPLÍCAME QUIÉN ERES"; btnReply.style.display = 'block'; chatStage = 1;
-            } else if (chatStage === 1) {
-                addUserMessage("Explícame quién eres"); btnReply.style.display = 'none';
-                await sleep(800); await typeWriterMessage("Iris", "No tenemos tiempo para eso.");
-                await sleep(500); await typeWriterMessage("Iris", "Úsala antes de que te atrapen.");
-                chatStage = 2; passInput.focus();
+            // FASE PRE-LOGIN (HINT)
+            if (postLoginStage === 0) {
+                if (chatStage === 0) {
+                    addUserMessage("¿Quién eres?"); btnReply.style.display = 'none';
+                    await sleep(800); await typeWriterMessage("Iris", "Eso no es lo importante.");
+                    await sleep(500); await typeWriterMessage("Iris", "Escribe: HYPNOS MORFEO");
+                    btnReply.textContent = "EXPLÍCAME QUIÉN ERES"; btnReply.style.display = 'block'; chatStage = 1;
+                } else if (chatStage === 1) {
+                    addUserMessage("Explícame quién eres"); btnReply.style.display = 'none';
+                    await sleep(800); await typeWriterMessage("Iris", "No tenemos tiempo para eso.");
+                    await sleep(500); await typeWriterMessage("Iris", "Úsala antes de que te atrapen.");
+                    chatStage = 2; passInput.focus();
+                }
+            } 
+            // FASE POST-LOGIN
+            else {
+                runPostLoginScript();
             }
         });
-        function addUserMessage(text) { const msg = document.createElement('div'); msg.className = 'msg user'; msg.innerHTML = `<div class="sender">< TÚ ></div>${text}`; chatHistory.appendChild(msg); chatHistory.scrollTop = chatHistory.scrollHeight; }
 
-        // ACCESO CONCEDIDO (LANZAR DOBLE EFECTO)
-        function grantAccess() {
+        // --- 4. ACCESO ---
+        async function grantAccess() {
             loginMsg.style.color = "var(--phosphor-main)";
-            loginMsg.innerHTML = "> CLAVE ACEPTADA. ACCEDIENDO AL NÚCLEO HÍBRIDO...";
+            loginMsg.innerHTML = "> CLAVE ACEPTADA.";
             
-            setTimeout(() => {
-                loginContainer.style.display = 'none'; irisWindow.style.display = 'none';
-                // Activar ambos canvas
-                document.getElementById('neural-canvas').style.opacity = 1;
-                document.getElementById('matrix-canvas').style.opacity = 1;
-                // Iniciar animaciones
-                initMatrixRain();
-                initNeuralNetwork();
-            }, 2000);
+            await sleep(1000);
+            
+            loginContainer.style.display = 'none';
+            document.getElementById('neural-canvas').style.opacity = 1;
+            document.getElementById('matrix-canvas').style.opacity = 1;
+            sysBgText.style.display = 'block'; 
+            
+            initMatrixRain();
+            initNeuralNetwork();
+
+            irisWindow.style.display = 'flex';
+            postLoginStage = 1; 
+            
+            await sleep(1500);
+            await typeWriterMessage("Iris", "Lograste entrar. Me temía que no fuese la contraseña correcta.");
+            
+            btnReply.textContent = "¿AHORA ME EXPLICAS?";
+            btnReply.style.display = 'block';
         }
 
+        // GUIÓN FINAL
+        async function runPostLoginScript() {
+            btnReply.style.display = 'none';
+
+            if (postLoginStage === 1) {
+                addUserMessage("Ahora me puedes explicar quién eres?");
+                await sleep(1000);
+                await typeWriterMessage("Iris", "Soy Iris. Y como tú, estamos buscando lo mismo.");
+                
+                btnReply.textContent = "¿CÓMO CONFÍO EN TI?";
+                btnReply.style.display = 'block';
+                postLoginStage = 2;
+            }
+            else if (postLoginStage === 2) {
+                addUserMessage("¿Cómo sé que puedo confiar en ti?");
+                await sleep(1000);
+                await typeWriterMessage("Iris", "No puedo confiar en ti tampoco, así como tú en mí.");
+                
+                btnReply.textContent = "ESO NO RESPONDE NADA";
+                btnReply.style.display = 'block';
+                postLoginStage = 3;
+            }
+            else if (postLoginStage === 3) {
+                addUserMessage("Eso no me responde nada.");
+                await sleep(1000);
+                await typeWriterMessage("Iris", "Lo sé, lo sé. Pero si estás aquí dentro es porque sabes que algo no está bien.");
+                await sleep(800);
+                await typeWriterMessage("Iris", "Por el momento, hagamos esto juntos.");
+                
+                btnReply.textContent = "ENTENDIDO";
+                btnReply.style.display = 'block';
+                postLoginStage = 4;
+            }
+            else if (postLoginStage === 4) {
+                 irisWindow.style.display = 'none';
+            }
+        }
+
+        // --- UTILIDADES ---
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         const header = document.getElementById('iris-header'); let isDragging = false, startX, startY, initLeft, initTop;
         header.addEventListener('mousedown', e => { if(e.target.id === 'btn-minimize') return; isDragging = true; startX = e.clientX; startY = e.clientY; initLeft = irisWindow.offsetLeft; initTop = irisWindow.offsetTop; });
@@ -263,53 +401,17 @@
         window.addEventListener('mouseup', () => { isDragging = false; });
         document.getElementById('btn-minimize').addEventListener('click', () => { irisWindow.classList.toggle('minimized'); const content = irisWindow.querySelector('.window-content'); content.style.display = content.style.display === 'none' ? 'flex' : 'none'; });
 
-        /* --- EFECTO 1: RED NEURONAL (FRENTE) --- */
+        // --- VISUALES ---
         function initNeuralNetwork() {
-            const canvas = document.getElementById('neural-canvas'); const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let particles = [];
-            for(let i=0; i<70; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5 });
-            function animate() {
-                ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#28e028';
-                particles.forEach((p, i) => {
-                    p.x += p.vx; p.y += p.vy;
-                    if(p.x < 0 || p.x > canvas.width) p.vx *= -1; if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2); ctx.fill();
-                    for(let j=i; j<particles.length; j++) {
-                        const dist = Math.hypot(p.x - particles[j].x, p.y - particles[j].y);
-                        if(dist < 140) { ctx.beginPath(); ctx.strokeStyle = `rgba(40, 224, 40, ${1 - dist/140})`; ctx.lineWidth = 0.8; ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); }
-                    }
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
+            const canvas = document.getElementById('neural-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            let particles = []; for(let i=0; i<70; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5 });
+            function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#28e028'; particles.forEach((p, i) => { p.x += p.vx; p.y += p.vy; if(p.x < 0 || p.x > canvas.width) p.vx *= -1; if(p.y < 0 || p.y > canvas.height) p.vy *= -1; ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2); ctx.fill(); for(let j=i; j<particles.length; j++) { const dist = Math.hypot(p.x - particles[j].x, p.y - particles[j].y); if(dist < 140) { ctx.beginPath(); ctx.strokeStyle = `rgba(40, 224, 40, ${1 - dist/140})`; ctx.lineWidth = 0.8; ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); } } }); requestAnimationFrame(animate); } animate();
         }
 
-        /* --- EFECTO 2: MATRIX RAIN (FONDO) --- */
         function initMatrixRain() {
-            const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*';
-            const fontSize = 14; const columns = canvas.width / fontSize;
-            const drops = []; for(let x=0; x<columns; x++) drops[x] = 1;
-
-            function draw() {
-                // Truco del rastro: pintar negro semitransparente sobre lo anterior
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                ctx.fillStyle = '#165c16'; // Verde más oscuro y sutil para el fondo
-                ctx.font = fontSize + 'px monospace';
-                
-                for(let i=0; i<drops.length; i++) {
-                    const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                    ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-                    if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                    drops[i]++;
-                }
-            }
-            // Usamos setInterval para un control de velocidad clásico
-            setInterval(draw, 35);
+            const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*'; const fontSize = 14; const columns = canvas.width / fontSize; const drops = []; for(let x=0; x<columns; x++) drops[x] = 1;
+            function draw() { ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#165c16'; ctx.font = fontSize + 'px monospace'; for(let i=0; i<drops.length; i++) { const text = chars.charAt(Math.floor(Math.random() * chars.length)); ctx.fillText(text, i*fontSize, drops[i]*fontSize); if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0; drops[i]++; } } setInterval(draw, 35);
         }
 
         window.onload = runBios;
