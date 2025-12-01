@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VAO</title>
+    <title>VAO | SECURE LINK</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <style>
@@ -61,7 +61,7 @@
         input[type="text"] { background: transparent; border: none; border-bottom: 2px solid var(--phosphor-dim); color: var(--phosphor-main); font-family: 'VT323', monospace; font-size: 1.5rem; width: 100%; outline: none; text-transform: uppercase; }
         input[type="text"]:focus { border-bottom: 2px solid var(--phosphor-main); }
 
-        /* --- BACKGROUND SYSTEM TEXT (POST LOGIN) --- */
+        /* --- BACKGROUND SYSTEM TEXT --- */
         #system-background-text {
             position: absolute; top: 20%; left: 5%;
             color: var(--phosphor-dim);
@@ -73,7 +73,7 @@
         }
         .blink-text { animation: blink 1s infinite; }
 
-        /* --- WINDOWS (FIXED LAYOUT) --- */
+        /* --- WINDOWS --- */
         .window {
             position: absolute; width: 450px; background-color: var(--window-bg); border: 2px solid var(--phosphor-main);
             box-shadow: 0 0 20px rgba(40, 224, 40, 0.2); display: none; flex-direction: column; z-index: 100;
@@ -84,23 +84,23 @@
             padding: 15px; 
             display: flex; 
             flex-direction: column; 
-            height: 400px; /* Aumentado un poco para más espacio */
+            height: 400px; 
         }
         
         .chat-history { 
             flex-grow: 1; 
             overflow-y: auto; 
-            margin-bottom: 0; /* Controlado por el padding del contenedor de abajo */
-            padding-right: 5px; 
+            margin-bottom: 0;
+            padding-right: 10px; 
         }
         .chat-history::-webkit-scrollbar { width: 5px; } .chat-history::-webkit-scrollbar-thumb { background: var(--phosphor-dim); }
         
-        /* CONTENEDOR DE BOTONES (FIX) */
+        /* CONTROLES SEPARADOS */
         .chat-controls {
-            flex-shrink: 0; /* No encogerse nunca */
+            flex-shrink: 0;
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px dashed var(--phosphor-dim); /* Separador visual */
+            border-top: 1px dashed var(--phosphor-dim);
             display: flex;
             justify-content: flex-end;
         }
@@ -112,7 +112,7 @@
         .retro-btn { background: transparent; border: 1px solid var(--phosphor-main); color: var(--phosphor-main); font-family: 'VT323', monospace; padding: 8px 15px; cursor: none; font-size: 1rem; transition: all 0.2s; }
         .retro-btn:hover { background: var(--phosphor-main); color: #000; }
 
-        /* --- LOCKDOWN SCREEN (RESTAURADA) --- */
+        /* --- LOCKDOWN SCREEN --- */
         #lockdown-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column;
             align-items: center; justify-content: center; border: 20px solid var(--alert-color); padding: 2rem;
@@ -214,7 +214,7 @@
         ];
 
         let attemptCount = 0;
-        let chatStage = 0; 
+        let chatStage = 0; // 0: No se ha dado la clave, 1: Se dio la clave
         let postLoginStage = 0; 
         const maxAttempts = 3;
 
@@ -235,7 +235,7 @@
         document.addEventListener('mousedown', () => { customCursor.style.transform = 'translate(-50%, -50%) scale(0.8)'; customCursor.style.backgroundColor = 'rgba(40, 224, 40, 0.4)'; });
         document.addEventListener('mouseup', () => { customCursor.style.transform = 'translate(-50%, -50%) scale(1)'; customCursor.style.backgroundColor = 'rgba(40, 224, 40, 0.1)'; });
 
-        // --- 1. BIOS ---
+        // --- BIOS ---
         async function runBios() {
             for (let line of biosSequence) {
                 await sleep(line.delay);
@@ -247,7 +247,7 @@
             await sleep(1000); biosScreen.style.display = 'none'; loginContainer.style.display = 'flex'; passInput.focus();
         }
 
-        // --- 2. LOGIN LOGIC ---
+        // --- LOGIN ---
         passInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const val = passInput.value.toUpperCase().trim();
@@ -256,7 +256,7 @@
             }
         });
 
-        // --- LÓGICA DE FALLOS ---
+        // --- MANEJO DE FALLOS ---
         function handleFailure() {
             attemptCount++;
             loginMsg.style.color = "var(--alert-color)";
@@ -286,7 +286,7 @@
 
         function triggerLockdown() { lockdownScreen.style.display = 'flex'; document.getElementById('main-wrapper').style.filter = 'blur(10px)'; }
 
-        // --- 3. CHAT SYSTEM ---
+        // --- SISTEMA DE CHAT ---
         async function typeWriterMessage(sender, text) {
             const msgContainer = document.createElement('div');
             msgContainer.classList.add('msg', sender === 'Iris' ? 'iris' : 'user');
@@ -308,15 +308,24 @@
             chatHistory.scrollTop = chatHistory.scrollHeight; 
         }
 
-        // CONTROLADOR DEL BOTÓN DE RESPUESTA
+        // --- FUNCIÓN HELPER PARA MOSTRAR BOTÓN + SCROLL ---
+        function showReplyButton(text) {
+            btnReply.textContent = text;
+            btnReply.style.display = 'block';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // --- LOGICA DE RESPUESTAS (INTERACCIÓN PRINCIPAL) ---
         btnReply.addEventListener('click', async () => {
-            // FASE PRE-LOGIN (HINT)
+            // FASE PRE-LOGIN (Antes de entrar)
             if (postLoginStage === 0) {
                 if (chatStage === 0) {
                     addUserMessage("¿Quién eres?"); btnReply.style.display = 'none';
                     await sleep(800); await typeWriterMessage("Iris", "Eso no es lo importante.");
                     await sleep(500); await typeWriterMessage("Iris", "Escribe: HYPNOS MORFEO");
-                    btnReply.textContent = "EXPLÍCAME QUIÉN ERES"; btnReply.style.display = 'block'; chatStage = 1;
+                    
+                    showReplyButton("EXPLÍCAME QUIÉN ERES");
+                    chatStage = 1; // Aquí marcamos que Iris YA DIO la clave
                 } else if (chatStage === 1) {
                     addUserMessage("Explícame quién eres"); btnReply.style.display = 'none';
                     await sleep(800); await typeWriterMessage("Iris", "No tenemos tiempo para eso.");
@@ -324,13 +333,13 @@
                     chatStage = 2; passInput.focus();
                 }
             } 
-            // FASE POST-LOGIN
+            // FASE POST-LOGIN (Ya adentro)
             else {
                 runPostLoginScript();
             }
         });
 
-        // --- 4. ACCESO ---
+        // --- ACCESO Y LÓGICA CONDICIONAL ---
         async function grantAccess() {
             loginMsg.style.color = "var(--phosphor-main)";
             loginMsg.innerHTML = "> CLAVE ACEPTADA.";
@@ -349,23 +358,36 @@
             postLoginStage = 1; 
             
             await sleep(1500);
-            await typeWriterMessage("Iris", "Lograste entrar. Me temía que no fuese la contraseña correcta.");
-            
-            btnReply.textContent = "¿AHORA ME EXPLICAS?";
-            btnReply.style.display = 'block';
+
+            // AQUÍ ESTÁ LA LÓGICA QUE PEDISTE:
+            if (chatStage === 0) {
+                // Usuario adivinó ANTES de que Iris diera la clave
+                await typeWriterMessage("Iris", "Wow, te iba a decir la contraseña, pero me temía que no fuese esa.");
+                showReplyButton("¿QUIÉN ERES?");
+            } else {
+                // Usuario siguió el flujo normal
+                await typeWriterMessage("Iris", "Lograste entrar. Me temía que no fuese la contraseña correcta.");
+                showReplyButton("¿AHORA ME EXPLICAS?");
+            }
         }
 
-        // GUIÓN FINAL
+        // GUIÓN POST-LOGIN (Responde a los botones de grantAccess)
         async function runPostLoginScript() {
             btnReply.style.display = 'none';
 
             if (postLoginStage === 1) {
-                addUserMessage("Ahora me puedes explicar quién eres?");
+                // Generar el mensaje del usuario dependiendo de qué botón pulsó
+                if (chatStage === 0) {
+                     addUserMessage("¿Quién eres?");
+                } else {
+                     addUserMessage("Ahora me puedes explicar quién eres?");
+                }
+
                 await sleep(1000);
+                // Ambos caminos convergen aquí
                 await typeWriterMessage("Iris", "Soy Iris. Y como tú, estamos buscando lo mismo.");
                 
-                btnReply.textContent = "¿CÓMO CONFÍO EN TI?";
-                btnReply.style.display = 'block';
+                showReplyButton("¿CÓMO CONFÍO EN TI?");
                 postLoginStage = 2;
             }
             else if (postLoginStage === 2) {
@@ -373,8 +395,7 @@
                 await sleep(1000);
                 await typeWriterMessage("Iris", "No puedo confiar en ti tampoco, así como tú en mí.");
                 
-                btnReply.textContent = "ESO NO RESPONDE NADA";
-                btnReply.style.display = 'block';
+                showReplyButton("ESO NO RESPONDE NADA");
                 postLoginStage = 3;
             }
             else if (postLoginStage === 3) {
@@ -384,8 +405,7 @@
                 await sleep(800);
                 await typeWriterMessage("Iris", "Por el momento, hagamos esto juntos.");
                 
-                btnReply.textContent = "ENTENDIDO";
-                btnReply.style.display = 'block';
+                showReplyButton("ENTENDIDO");
                 postLoginStage = 4;
             }
             else if (postLoginStage === 4) {
