@@ -26,21 +26,21 @@
             transition: background-color 2s ease;
         }
 
-        /* --- RED ALERT STATE (SIN TEMBLOR) --- */
+        /* RED ALERT STATE */
         body.critical-error {
             --phosphor-main: #ff3333;
             --phosphor-dim: #5c1616;
-            /* Animation shake eliminada por petición */
+
         }
         body.critical-error .crt-overlay { background: rgba(255, 0, 0, 0.1); }
         body.critical-error .panel { border-color: var(--alert-color); }
 
-        /* --- SCROLLBARS --- */
+        /* SCROLLBARS */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #000; border-left: 1px solid var(--phosphor-dim); }
         ::-webkit-scrollbar-thumb { background: var(--phosphor-dim); border: 1px solid var(--phosphor-main); }
 
-        /* --- PANTALLA INICIO --- */
+        /* PANTALLA INICIO */
         #power-on-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000; color: var(--phosphor-main);
@@ -51,13 +51,13 @@
         .power-btn { border: 2px solid var(--phosphor-main); padding: 10px 20px; margin-top: 20px; animation: blink 1s infinite; }
         .power-btn:hover { background: var(--phosphor-main); color: #000; }
 
-        /* --- FX --- */
+        /* FX */
         .crt-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%; }
         .scanline { width: 100%; height: 100px; z-index: 1000; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(33, 255, 0, 0.04) 50%, rgba(0,0,0,0) 100%); opacity: 0.1; position: absolute; bottom: 100%; animation: scanline 8s linear infinite; pointer-events: none; }
         #custom-cursor { position: fixed; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid var(--phosphor-main); background-color: rgba(40, 224, 40, 0.1); pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: transform 0.05s linear; mix-blend-mode: screen; }
         #custom-cursor::after { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); font-size: 12px; color: var(--phosphor-main); }
 
-        /* --- LAYOUT --- */
+        /* LAYOUT */
         #bios-screen { padding: 2rem; white-space: pre-wrap; line-height: 1.4; color: var(--phosphor-main); overflow-y: auto; height: 100%; display: none; flex-direction: column; justify-content: flex-end; }
         
         #login-container { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); flex-direction: column; align-items: center; width: 100%; max-width: 600px; z-index: 20; text-align: center; }
@@ -67,7 +67,7 @@
         input[type="text"] { background: transparent; border: none; border-bottom: 2px solid var(--phosphor-dim); color: var(--phosphor-main); font-family: 'VT323', monospace; font-size: 1.5rem; width: 100%; outline: none; text-transform: uppercase; }
         input[type="text"]:focus { border-bottom: 2px solid var(--phosphor-main); }
 
-        /* --- HACKER DESKTOP --- */
+        /* HACKER DESKTOP */
         #hacker-desktop { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 50; padding: 20px; gap: 20px; grid-template-columns: 250px 1fr 350px; grid-template-rows: 60% 40%; }
         .panel { border: 2px solid var(--phosphor-main); background: rgba(0,0,0,0.8); display: flex; flex-direction: column; overflow: hidden; }
         .panel-header { background: var(--phosphor-main); color: #000; padding: 5px; font-weight: bold; font-size: 14px; flex-shrink: 0; }
@@ -97,7 +97,7 @@
         .feed-entry { margin-bottom: 5px; border-bottom: 1px dashed #222; padding-bottom: 4px; }
         .feed-time { color: var(--phosphor-dim); margin-right: 5px; font-size: 10px; } .feed-alert { color: var(--alert-color); font-weight: bold; }
 
-        /* --- CHAT IRIS (Z-INDEX 300) --- */
+        /* CHAT IRIS */
         #iris-window {
             position: absolute; bottom: 30px; left: 300px; width: 450px; height: 320px;
             background-color: #000; border: 2px solid var(--phosphor-main);
@@ -112,7 +112,7 @@
         .retro-btn { background: transparent; border: 1px solid var(--phosphor-main); color: var(--phosphor-main); font-family: 'VT323', monospace; padding: 5px 15px; cursor: pointer; font-size: 1.1rem; }
         .retro-btn:hover { background: var(--phosphor-main); color: #000; }
 
-        /* --- VAO INTERVENTION (Z-INDEX 200) --- */
+        /* VAO INTERVENTION) */
         #vao-intervention {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 70%; height: 60%; background: rgba(0,0,0,0.95); border: 4px double var(--alert-color);
@@ -124,11 +124,11 @@
         .vao-btn { background: #300; color: var(--alert-color); border: 1px solid var(--alert-color); padding: 15px 30px; cursor: pointer; font-family: 'VT323'; font-size: 1.4rem; display: none; text-transform: uppercase; }
         .vao-btn:hover { background: var(--alert-color); color: #000; }
 
-        /* --- EMERGENCY KILL SWITCH (Z-INDEX 400) --- */
+        /* EMERGENCY KILL SWITCH */
         #emergency-kill-switch {
             display: none; position: fixed; top: 10%; left: 50%; transform: translate(-50%, 0);
             z-index: 400; padding: 20px 50px; font-size: 2rem; background: #000;
-            color: #555; border: 5px solid #555; /* Inactivo */
+            color: #555; border: 5px solid #555;
             font-family: 'VT323'; text-transform: uppercase; cursor: not-allowed; opacity: 0.6;
             box-shadow: none; transition: all 0.5s ease; pointer-events: none;
         }
@@ -138,7 +138,7 @@
             box-shadow: 0 0 50px var(--alert-color); animation: pulse 0.8s infinite; 
         }
 
-        /* --- SHUTDOWN FX --- */
+        /* SHUTDOWN FX */
         #shutdown-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000;
             z-index: 5000; pointer-events: none; opacity: 0;
@@ -149,12 +149,12 @@
         
         #final-message {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
-            z-index: 6000; width: 100%; text-align: center; color: #28e028; /* Green static */
+            z-index: 6000; width: 100%; text-align: center; color: #28e028;
             font-size: 2rem; display: none; text-shadow: 0 0 10px #28e028;
             font-family: 'VT323', monospace; letter-spacing: 2px;
         }
 
-        /* --- BACKGROUNDS & LOCKDOWN --- */
+        /* BACKGROUNDS & LOCKDOWN */
         .bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 3s ease-in-out; }
         #matrix-canvas { z-index: 1; } #neural-canvas { z-index: 2; mix-blend-mode: screen; }
         #lockdown-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; align-items: center; justify-content: center; border: 20px solid var(--alert-color); padding: 2rem; }
@@ -274,7 +274,7 @@
         let videosCommented = false;
         let trainingCommented = false;
 
-        // --- AUDIO ---
+        // AUDIO
         const AS = {
             ctx: null,
             init: function() { if(!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } },
@@ -289,7 +289,7 @@
             shutdown: function() { this.tone(50, 'sawtooth', 1.0, 0.5); }
         };
 
-        // --- DOM ---
+        // DOM
         const biosScreen = document.getElementById('bios-screen');
         const loginContainer = document.getElementById('login-container');
         const passInput = document.getElementById('password-input');
@@ -325,7 +325,7 @@
             await sleep(500); biosScreen.style.display = 'none'; loginContainer.style.display = 'flex'; passInput.focus();
         }
 
-        // --- LOGIN ---
+        // LOGIN
         passInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const val = passInput.value.toUpperCase().trim();
@@ -374,7 +374,7 @@
             }, 1500);
         }
 
-        // --- NARRATIVA ---
+        // NARRATIVA
         function bondingSequence() {
             typeWriterMessage("Iris", "Escucha. No te conozco, pero ambos sabemos que VAO esconde algo.");
             setTimeout(() => {
@@ -543,7 +543,6 @@
         function showVideo(name) {
             viewerText.style.display = 'none'; videoPlayer.style.display = 'block';
             
-            // MAPEO CORRECTO DE VIDEOS 1 A 7
             const videoMap = {
                 'video1': 'assets/1.mp4',
                 'video2': 'assets/2.mp4',
@@ -557,7 +556,6 @@
             videoPlayer.src = videoMap[name]; 
             videoPlayer.play();
             
-            // FASE 2: DISCUSION (Video 1 o 2)
             if((name === 'video1' || name === 'video2') && scanStage === 2 && !videosCommented) {
                 videosCommented = true;
                 setTimeout(() => {
@@ -576,7 +574,7 @@
                 }, 3000);
             }
 
-            // FASE 3: TRAINING (Video 3)
+            // FASE 3: TRAINING 
             if(name === 'video3' && scanStage === 3 && !trainingCommented) {
                 trainingCommented = true;
                 setTimeout(() => {
@@ -592,9 +590,8 @@
                 }, 3000);
             }
 
-            // FASE 7: HARVEST / FINAL (Video 7)
+            // FASE 7: HARVEST / FINAL 
             if(name === 'video7' && scanStage === 6) {
-                // Espera 40 segundos exactos antes de la interacción de Iris
                 setTimeout(() => {
                      typeWriterMessage("Iris", "El video terminó... pero la señal sigue transmitiendo desde el núcleo. Es algo enorme.");
                      showReplyButton("[ INTERCEPTAR NÚCLEO ]", () => {
@@ -604,14 +601,14 @@
             }
         }
 
-        // --- FASE 4: CONFRONTACIÓN VAO ---
+        // FASE 4: CONFRONTACIÓN VAO
         async function triggerVaoConfrontation() {
             // 1. Alert State
             document.body.classList.add('critical-error');
             AS.alarm();
             addLiveLog("VAO_AI: CRITICAL SYSTEM ERROR - INTRUSION DETECTED", true);
             
-            // 2. Iris Panic (visible above all)
+            // 2. Iris Panic 
             typeWriterMessage("Iris", "¡Mierda! ¡Nos ha visto! ¡Está bloqueando mis controles!");
             await sleep(2000);
             
@@ -673,10 +670,9 @@
             AS.shutdown();
             // Animación CSS de apagado
             mainWrapper.classList.add('crt-off');
-            shutdownOverlay.style.opacity = 1; // Fade to black total
-            killSwitch.style.display = 'none'; // Desaparece botón
+            shutdownOverlay.style.opacity = 1;
+            killSwitch.style.display = 'none';
 
-            // Esperar a que la pantalla esté negra y quieta
             await sleep(3000);
 
             // Mensaje final en estático verde
@@ -686,7 +682,7 @@
             window.location.href = "vaocreditos.html";
         }
 
-        // --- UTILS PARA VAO ---
+        // UTILS PARA VAO
         async function typeWriterVao(text) {
             vaoContent.innerHTML = "";
             for(let c of text) {
@@ -712,7 +708,7 @@
             }
         }
 
-        // --- UTILS GENERALES ---
+        // UTILS GENERALES
         function addLiveLog(text, alert=false) { const time = new Date().toLocaleTimeString([], {hour12:false}); const div = document.createElement('div'); div.className = 'feed-entry'; div.innerHTML = `<span class="feed-time">[${time}]</span> <span class="${alert?'feed-alert':''}">${text}</span>`; liveFeedLog.appendChild(div); liveFeedLog.scrollTop = liveFeedLog.scrollHeight; }
         function logTerm(text, type='') { const d = document.createElement('div'); d.className = type; d.innerText = text; termLog.appendChild(d); termLog.scrollTop = termLog.scrollHeight; }
         function openIrisChat(text) { irisWindow.style.display = 'flex'; AS.incoming(); typeWriterMessage("Iris", text); }

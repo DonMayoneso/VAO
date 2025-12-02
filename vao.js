@@ -9,7 +9,7 @@ let finalSequenceTriggered = false;
 // Variable para controlar que la narrativa de solicitud no se repita
 let requestStoryAdvanced = false;
 
-/* --- AUDIO SYSTEM --- */
+/* AUDIO SYSTEM */
 const AS = {
     ctx: null,
     init: function() { if(!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } },
@@ -21,7 +21,7 @@ const AS = {
 };
 ['click', 'touchstart'].forEach(evt => document.addEventListener(evt, () => AS.init(), {once:true}));
 
-/* --- INICIO AUTOMÁTICO --- */
+/* INICIO AUTOMÁTICO */
 window.onload = function() {
     AS.init();
     setTimeout(() => {
@@ -35,7 +35,7 @@ window.onload = function() {
     initGame();
 };
 
-/* --- LOGICA CHAT FASE 1 (EVASIVA - 7 FASES) --- */
+/* LOGICA CHAT */
 async function userAsk() {
     const btnArea = document.getElementById('chat-controls');
     const history = document.getElementById('chat-history');
@@ -123,7 +123,7 @@ async function continueChat(step) {
     }
 }
 
-/* --- FASE 2: POST-VIDEOS --- */
+/* FASE 2: POST-VIDEOS */
 async function postVideoChat(step) {
     const history = document.getElementById('chat-history');
     const btnArea = document.getElementById('chat-controls');
@@ -164,7 +164,7 @@ async function postVideoChat(step) {
     }
 }
 
-/* --- FASE 3: LA SOLICITUD --- */
+/* FASE 3: LA SOLICITUD */
 async function openExtractionLog() {
     openWindow('notepad-extraction');
     if(!extractionRead) {
@@ -223,7 +223,7 @@ async function extractionChat(step) {
     }
 }
 
-/* --- FASE 4: FINAL / DISOCIACIÓN --- */
+/* FASE 4: FINAL / DISOCIACIÓN */
 function checkFinalVideos() {
     finalVideosCount++;
     // Al ver 2 de los 3 videos finales
@@ -360,7 +360,7 @@ async function typewriter(text, element, speed) {
     }
 }
 
-/* --- GENERADORES --- */
+/* GENERADORES */
 function generateFile() {
     const folder = document.getElementById('vitalis-files');
     const status = document.getElementById('status-bar');
@@ -515,21 +515,29 @@ function generateFinalVideos() {
     const folder = document.getElementById('vitalis-files');
     const status = document.getElementById('status-bar');
     
-    const videos = ['FARM_03.avi', 'FEEDING.avi', 'HARVEST.avi'];
-    videos.forEach(name => {
+    // Mapeo correcto de videos para la fase final
+    const videos = [
+        { file: 'FARM_03.avi', winId: 'video-window-3' }, // Abre 4.mp4
+        { file: 'FEEDING.avi', winId: 'video-window-4' }, // Abre 5.mp4
+        { file: 'HARVEST.avi', winId: 'video-window-5' }  // Abre 6.mp4
+    ];
+
+    videos.forEach(vData => {
         const v = document.createElement('div');
         v.className = 'file-icon';
-        v.onclick = () => { openWindow('video-window-1'); checkFinalVideos(); }; 
-        v.innerHTML = `<img src="assets/avi.png"><div class="file-name">${name}</div>`;
+        v.onclick = () => { openWindow(vData.winId); checkFinalVideos(); }; 
+        v.innerHTML = `<img src="assets/avi.png"><div class="file-name">${vData.file}</div>`;
         folder.appendChild(v);
     });
-    status.innerText = "7 objetos"; AS.notify();
+
+    status.innerText = "7 objetos"; 
+    AS.notify();
     const win = document.getElementById('vitalis-window');
     if(win.style.display === 'none') openWindow('vitalis-window');
     focusWindow(win);
 }
 
-/* --- WINDOWS & UI --- */
+/* WINDOWS & UI */
 function focusWindow(el) { el.style.zIndex = ++zIndex; el.style.display = 'flex'; updateTaskList(); }
 function closeWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
 function minWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
@@ -558,7 +566,7 @@ function dragEnd() { dragEl=null; document.removeEventListener('mousemove',dragM
 
 function updateTaskList() {
     const list=document.getElementById('task-list'); list.innerHTML='';
-    ['vitalis-window','vao-chat-window','notepad-window','notepad-extraction','minesweeper-window','recycle-window','video-window-1','video-window-2','request-window'].forEach(id=>{
+    ['vitalis-window','vao-chat-window','notepad-window','notepad-extraction','minesweeper-window','recycle-window','video-window-1','video-window-2','video-window-3','video-window-4','video-window-5','request-window'].forEach(id=>{
         const el=document.getElementById(id);
         if(el.style.display==='flex'||el.dataset.opened==='true'){
             if(el.style.display==='flex')el.dataset.opened='true';

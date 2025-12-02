@@ -9,7 +9,7 @@
     <style>
         body {
             background-color: #000;
-            color: #00ff00; /* Verde Terminal */
+            color: #00ff00;
             font-family: 'VT323', monospace;
             height: 100vh;
             margin: 0;
@@ -32,7 +32,7 @@
         .line {
             display: block;
             margin-bottom: 15px;
-            opacity: 0; /* Oculto hasta que se escriba */
+            opacity: 0;
         }
 
         .highlight {
@@ -88,7 +88,7 @@
     <button id="reboot-btn" onclick="window.location.href='index.html'">> REINICIAR SISTEMA_</button>
 
     <script>
-        // Configuración de audio simple (Beep)
+        // Configuración de audio simple
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioContext();
         
@@ -97,7 +97,7 @@
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'square';
-            osc.frequency.value = 800 + Math.random() * 200; // Variación ligera
+            osc.frequency.value = 800 + Math.random() * 200;
             gain.gain.value = 0.05;
             osc.connect(gain);
             gain.connect(ctx.destination);
@@ -105,7 +105,7 @@
             osc.stop(ctx.currentTime + 0.05);
         }
 
-        // El guion de los créditos
+        // Créditos
         const script = [
             { text: "FIN DE LA SESIÓN...", delay: 50 },
             { text: "CARGANDO DATOS DE DESARROLLO...", delay: 30 },
@@ -139,11 +139,9 @@
             
             for (let i = 0; i < text.length; i++) {
                 p.textContent += text[i];
-                if(text[i] !== ' ') beep(); // Sonido al escribir
+                if(text[i] !== ' ') beep();
                 await new Promise(r => setTimeout(r, lineData.delay));
             }
-
-            // Quitar el cursor parpadeante de la línea terminada (opcional, lo dejo para efecto retro)
             p.classList.remove('blink-cursor');
         }
 
@@ -153,7 +151,7 @@
 
             for (const line of script) {
                 await typeLine(line);
-                await new Promise(r => setTimeout(r, 300)); // Pausa entre líneas
+                await new Promise(r => setTimeout(r, 300));
             }
 
             // Mostrar botón
@@ -161,7 +159,7 @@
             btn.style.opacity = 1;
         }
 
-        // Iniciar al hacer click en cualquier lado (para activar audio) o automáticamente
+        // Iniciar al hacer click en cualquier lado
         document.body.addEventListener('click', () => {
             if(ctx.state === 'suspended') ctx.resume();
         });

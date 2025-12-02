@@ -28,7 +28,7 @@
             height: 100vh; height: 100dvh; overflow: hidden; cursor: default;
         }
 
-        /* --- PANTALLA TRANSICIÓN (CINEMÁTICA CORREGIDA) --- */
+        /* PANTALLA TRANSICIÓN */
         #transition-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000; color: #fff;
@@ -44,7 +44,7 @@
             color: #ffffff; letter-spacing: 2px;
         }
 
-        /* --- PANTALLA DE ENCENDIDO --- */
+        /* PANTALLA DE ENCENDIDO */
         #power-on-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000; color: #0f0;
@@ -55,7 +55,7 @@
         .power-btn { border: 2px solid #0f0; padding: 10px 20px; margin-top: 20px; animation: blink 1s infinite; }
         .power-btn:hover { background: #0f0; color: #000; }
 
-        /* --- BIOS --- */
+        /* BIOS */
         #bios-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--bios-bg); color: var(--bios-text);
@@ -74,7 +74,7 @@
             margin-top: 40px; margin-bottom: 40px; display: none; align-self: center; font-weight: bold; text-align: center;
         }
 
-        /* --- ESCRITORIO --- */
+        /* ESCRITORIO */
         #desktop { display: none; width: 100%; height: 100%; background-color: var(--desktop); position: relative; overflow: hidden; }
         #desktop::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -96,7 +96,7 @@
         .desktop-icon:active { border: 1px dotted #fff; background: rgba(0,0,128,0.2); }
         .icon-label { color: #fff; font-size: 11px; margin-top: 2px; padding: 1px 3px; text-shadow: 1px 1px #000; }
 
-        /* --- VENTANAS --- */
+        /* VENTANAS */
         .window {
             background-color: var(--win-gray);
             border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
@@ -120,11 +120,11 @@
         .btn-win.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
         .window-body { padding: 10px; color: var(--win-black); font-size: 13px; }
 
-        /* --- NOTEPAD STYLE FOR AUTHORS --- */
+        /* NOTEPAD STYLE FOR AUTHORS */
         .notepad-body { background: #fff; padding: 0; display: flex; flex-direction: column; height: 100%; border: 2px inset var(--win-gray); margin: 2px; }
         .notepad-content { flex-grow: 1; padding: 5px; font-family: 'Courier New', monospace; font-size: 14px; overflow: auto; white-space: pre-wrap; }
 
-        /* --- LOGIN WINDOW --- */
+        /* LOGIN WINDOW */
         #login-window { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 340px; z-index: 100; }
         .logo-box { width: 100%; height: 120px; background: #fff; border: 2px inset var(--win-gray); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; padding: 10px; }
         .logo-box img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
@@ -132,7 +132,7 @@
         .btn-action { padding: 4px 15px; background: var(--win-gray); border: 2px outset #fff; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
         .btn-action:active { border: 2px inset #fff; }
 
-        /* --- POPUPS --- */
+        /* POPUPS */
         #vao-chat-window { top: 10%; left: 5%; width: 300px; display: none; z-index: 200; }
         .chat-area { height: 150px; background: #fff; border: 2px inset var(--win-gray); overflow-y: auto; padding: 5px; margin-bottom: 5px; }
         .chat-msg { margin-bottom: 5px; }
@@ -140,7 +140,7 @@
         #hacker-window .title-bar { background: var(--win-red); }
         #hacker-window .window-body { background: #000; color: #0f0; font-family: 'Courier New', monospace; }
 
-        /* --- ARCHIVOS --- */
+        /* ARCHIVOS */
         #about-window, #recycle-window, #bibliography-window, #authors-window { display: none; z-index: 101; }
         #about-window, #recycle-window, #bibliography-window { top: 15%; left: 10%; width: 280px; }
         
@@ -148,7 +148,7 @@
         .file-item { display: flex; align-items: center; padding: 2px; cursor: pointer; color: black; text-decoration: none; }
         .file-item:hover { background: var(--win-blue); color: #fff; }
 
-        /* --- BUSCAMINAS --- */
+        /* BUSCAMINAS */
         #minesweeper-window { top: 20%; left: 20%; display: none; z-index: 102; width: auto; }
         .minesweeper-frame { border: 2px inset #fff; padding: 4px; background: #c0c0c0; }
         .ms-header { display: flex; justify-content: space-between; border: 2px inset #fff; padding: 4px; margin-bottom: 5px; }
@@ -158,7 +158,7 @@
         .cell:active, .cell.revealed { border: 1px solid #808080; background: #c0c0c0; padding-top: 1px; }
         .cell.mine { background: #f00; }
 
-        /* --- BARRA Y MENU --- */
+        /* BARRA Y MENU */
         #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 30px; background: var(--win-gray); border-top: 2px outset #fff; display: flex; align-items: center; padding: 2px; z-index: 4000; }
         .start-btn { height: 24px; padding: 0 6px; display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 13px; background: var(--win-gray); border: 2px outset #fff; cursor: pointer; margin-right: 4px; }
         .start-btn:active, .start-btn.active { border: 2px inset #fff; }
@@ -386,7 +386,7 @@ Desarrollado en 48h.</div>
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         let zIndex = 100;
 
-        /* --- ARRANQUE --- */
+        /* ARRANQUE */
         function systemStart() {
             AS.init();
             document.getElementById('power-on-screen').style.display = 'none';
@@ -487,7 +487,7 @@ Desarrollado en 48h.</div>
             AS.boot(); updateTaskList();
         }
 
-        /* --- LOGIN & TRANSICIÓN --- */
+        /* LOGIN & TRANSICIÓN */
         const passInput = document.getElementById('pass-input');
         passInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); AS.click(); });
         passInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') attemptLogin(); });
@@ -555,7 +555,7 @@ Desarrollado en 48h.</div>
             }
         }
 
-        /* --- VENTANAS --- */
+        /* VENTANAS */
         function focusWindow(el) { el.style.zIndex = ++zIndex; el.style.display = 'flex'; updateTaskList(); }
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
         function minWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
@@ -592,10 +592,9 @@ Desarrollado en 48h.</div>
         }
         function dragEnd() { dragEl = null; document.removeEventListener('mousemove', dragMove); document.removeEventListener('mouseup', dragEnd); document.removeEventListener('touchmove', dragMove); document.removeEventListener('touchend', dragEnd); }
 
-        /* --- BARRA & MENU --- */
+        /* BARRA & MENU */
         function updateTaskList() {
             const list = document.getElementById('task-list'); list.innerHTML = '';
-            // MODIFICADO: Agregado 'authors-window' a la lista de tareas
             ['login-window', 'about-window', 'bibliography-window', 'authors-window', 'recycle-window', 'minesweeper-window'].forEach(id => {
                 const el = document.getElementById(id);
                 if(id === 'login-window' || el.style.display === 'flex' || el.dataset.opened === 'true') {
@@ -613,12 +612,12 @@ Desarrollado en 48h.</div>
         function reboot() { document.getElementById('desktop').style.display='none'; document.getElementById('bios-screen').style.display='flex'; runBios(); }
         function shutdown() { document.getElementById('shutdown-screen').style.display='flex'; document.getElementById('shutdown-fill').style.width='100%'; setTimeout(() => { window.location.href="https://donmayoneso.github.io/ods6proGest/"; }, 2000); }
 
-        /* --- NUEVA FUNCIÓN DE VERIFICACIÓN --- */
+        /* NUEVA FUNCIÓN DE VERIFICACIÓN */
         function checkSystem() {
             alert("⚠️ AVISO DE SISTEMA v4.02 ⚠️\n\n> Esta interfaz está optimizada y diseñada para computadoras de escritorio.\n> La implementación móvil (WAP) se encuentra actualmente en desarrollo.\n\nPresione Aceptar para continuar bajo su propia responsabilidad.");
             systemStart();
         }
-        /* --- JUEGO --- */
+        /* JUEGO */
         let msGrid = []; const ROWS=9, COLS=9, MINES=10;
         function initGame() {
             const c = document.getElementById('ms-grid'); c.innerHTML = ''; msGrid = [];
@@ -630,7 +629,7 @@ Desarrollado en 48h.</div>
         function reveal(i) { if(msGrid[i].rev) return; msGrid[i].rev=true; const el = document.getElementById('ms-grid').children[i]; el.className='cell revealed'; if(msGrid[i].val>0) { el.innerText=msGrid[i].val; el.style.color=['blue','green','red'][msGrid[i].val-1]||'black'; } else { const r=Math.floor(i/COLS), c=i%COLS; for(let x=-1; x<=1; x++) for(let y=-1; y<=1; y++) { const nr=r+x, nc=c+y; if(nr>=0 && nr<ROWS && nc>=0 && nc<COLS) reveal(nr*COLS+nc); } } }
         function flagCell(i) { msGrid[i].flag=!msGrid[i].flag; document.getElementById('ms-grid').children[i].innerText=msGrid[i].flag?'🚩':''; AS.click(); }
 
-        /* --- CLOCK & CURSOR --- */
+        /* CLOCK & CURSOR */
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
         if (!window.matchMedia("(max-width: 768px)").matches) {
             document.getElementById('custom-cursor').style.display = 'block';
