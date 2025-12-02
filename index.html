@@ -37,19 +37,14 @@
             padding: 20px; text-align: center; flex-wrap: wrap;
             transition: opacity 1s ease-out;
         }
-        /* Importante: inline-block para respetar espacios */
         #transition-screen span { display: inline-block; white-space: pre; }
         
-        /* ESTILO PARA LA PALABRA "NADA" */
         .emphasis { 
-            font-weight: bold; 
-            font-size: 3rem; 
-            text-shadow: 0 0 15px #fff; 
-            color: #ffffff; 
-            letter-spacing: 2px;
+            font-weight: bold; font-size: 3rem; text-shadow: 0 0 15px #fff; 
+            color: #ffffff; letter-spacing: 2px;
         }
 
-        /* --- PANTALLA DE ENCENDIDO (Anti-Block) --- */
+        /* --- PANTALLA DE ENCENDIDO --- */
         #power-on-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000; color: #0f0;
@@ -75,10 +70,8 @@
 
         /* ASCII GIGANTE */
         #ascii-logo-container {
-            font-size: 10px; line-height: 8px; 
-            white-space: pre; color: #fff;
-            margin-top: 40px; margin-bottom: 40px;
-            display: none; align-self: center; font-weight: bold; text-align: center;
+            font-size: 10px; line-height: 8px; white-space: pre; color: #fff;
+            margin-top: 40px; margin-bottom: 40px; display: none; align-self: center; font-weight: bold; text-align: center;
         }
 
         /* --- ESCRITORIO --- */
@@ -90,14 +83,12 @@
             filter: brightness(0) invert(1); pointer-events: none; z-index: 0;
         }
 
-        /* --- CLASES IMAGENES --- */
         img { image-rendering: pixelated; pointer-events: none; }
         .icon-img { width: 32px; height: 32px; object-fit: contain; margin-bottom: 2px; }
         .file-ico-sm { width: 16px; height: 16px; margin-right: 6px; object-fit: contain; vertical-align: middle; }
         .menu-icon { width: 20px; height: 20px; object-fit: contain; margin-right: 10px; vertical-align: middle; }
         .start-icon-img { width: 16px; height: 16px; object-fit: contain; margin-right: 2px; vertical-align: middle; }
 
-        /* --- ICONOS ESCRITORIO --- */
         .desktop-icon {
             position: absolute; width: 72px; display: flex; flex-direction: column; align-items: center;
             cursor: pointer; text-align: center; z-index: 50; padding: 5px; border: 1px solid transparent;
@@ -129,6 +120,10 @@
         .btn-win.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
         .window-body { padding: 10px; color: var(--win-black); font-size: 13px; }
 
+        /* --- NOTEPAD STYLE FOR AUTHORS --- */
+        .notepad-body { background: #fff; padding: 0; display: flex; flex-direction: column; height: 100%; border: 2px inset var(--win-gray); margin: 2px; }
+        .notepad-content { flex-grow: 1; padding: 5px; font-family: 'Courier New', monospace; font-size: 14px; overflow: auto; white-space: pre-wrap; }
+
         /* --- LOGIN WINDOW --- */
         #login-window { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 340px; z-index: 100; }
         .logo-box { width: 100%; height: 120px; background: #fff; border: 2px inset var(--win-gray); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; padding: 10px; }
@@ -146,9 +141,11 @@
         #hacker-window .window-body { background: #000; color: #0f0; font-family: 'Courier New', monospace; }
 
         /* --- ARCHIVOS --- */
-        #about-window, #recycle-window { top: 15%; left: 10%; width: 280px; display: none; z-index: 101; }
+        #about-window, #recycle-window, #bibliography-window, #authors-window { display: none; z-index: 101; }
+        #about-window, #recycle-window, #bibliography-window { top: 15%; left: 10%; width: 280px; }
+        
         .file-list { width: 100%; background: #fff; border: 2px inset var(--win-gray); height: 120px; padding: 5px; overflow-y: auto; }
-        .file-item { display: flex; align-items: center; padding: 2px; cursor: pointer; }
+        .file-item { display: flex; align-items: center; padding: 2px; cursor: pointer; color: black; text-decoration: none; }
         .file-item:hover { background: var(--win-blue); color: #fff; }
 
         /* --- BUSCAMINAS --- */
@@ -178,7 +175,6 @@
         .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #000; }
         .dot.yellow { background: #ffcc00; } .dot.red { background: #cc0000; }
 
-        /* --- APAGADO --- */
         #shutdown-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000; color: #ff9900;
@@ -189,7 +185,6 @@
         .shutdown-bar { width: 300px; height: 20px; border: 2px solid #ff9900; padding: 2px; margin-top: 20px; display: flex; }
         .shutdown-fill { height: 100%; background: #ff9900; width: 0%; transition: width 2s linear; }
 
-        /* --- CURSOR --- */
         #custom-cursor { position: fixed; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid var(--desktop); background-color: rgba(0, 128, 128, 0.1); pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: transform 0.05s linear; mix-blend-mode: difference; display: none; }
         #custom-cursor::after { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); font-size: 12px; color: #fff; }
 
@@ -198,6 +193,7 @@
             #vao-chat-window { left: 5%; }
             #hacker-window { right: 5%; }
             #ascii-logo-container { font-size: 4px; line-height: 4px; }
+            #authors-window { width: 90%; left: 5%; }
         }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
@@ -206,7 +202,7 @@
 
     <div id="transition-screen"></div>
 
-    <div id="power-on-screen" onclick="systemStart()">
+    <div id="power-on-screen" onclick="checkSystem()">
         <div>[ SISTEMA APAGADO ]</div>
         <div class="power-btn">INICIAR VAO WORKSTATION</div>
     </div>
@@ -233,7 +229,7 @@
 
     <div id="desktop">
         <div class="desktop-icon" style="top:20px; left:20px;" onmousedown="iconClick('about-window')">
-            <img src="assets/folder.png" alt="Archivos" class="icon-img"><span class="icon-label">Archivos</span>
+            <img src="assets/folder.png" alt="Archivos" class="icon-img"><span class="icon-label">Acerca de</span>
         </div>
         <div class="desktop-icon" style="top:100px; left:20px;" onmousedown="iconClick('recycle-window')">
             <img src="assets/trash.png" alt="Papelera" class="icon-img"><span class="icon-label">Papelera</span>
@@ -282,13 +278,52 @@
 
         <div class="window" id="about-window" onmousedown="focusWindow(this)">
             <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
-                <span>C:\Archivos</span>
+                <span>C:\Acerca de</span>
                 <div class="window-controls"><div class="btn-win" onclick="minWindow('about-window')">_</div><div class="btn-win" onclick="closeWindow('about-window')">X</div></div>
             </div>
             <div class="window-body">
                 <div class="file-list">
-                    <div class="file-item"><img src="assets/file.png" class="file-ico-sm">reporte_anual.doc</div>
-                    <div class="file-item"><img src="assets/file.png" class="file-ico-sm">empleados.db</div>
+                    <div class="file-item" onclick="window.location.href='vaocreditos.html'">
+                        <img src="assets/exe.png" class="file-ico-sm">creditos.exe
+                    </div>
+                    <div class="file-item" onclick="openWindow('authors-window')">
+                        <img src="assets/file.png" class="file-ico-sm">autores.txt
+                    </div>
+                    <div class="file-item" onclick="openWindow('bibliography-window')">
+                        <img src="assets/folder.png" class="file-ico-sm">Bibliografia
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="authors-window" onmousedown="focusWindow(this)" style="top: 25%; left: 30%; width: 350px;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>autores.txt - Bloc de notas</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('authors-window')">_</div><div class="btn-win" onclick="closeWindow('authors-window')">X</div></div>
+            </div>
+            <div class="notepad-body">
+                <div class="notepad-content">Desarrollado y diseñado por Javier Troncoso y Pablo Alvarado.
+
+Desarrollado en 48h.</div>
+            </div>
+        </div>
+
+        <div class="window" id="bibliography-window" onmousedown="focusWindow(this)" style="display:none; left: 15%; top: 20%;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>C:\Acerca de\Bibliografia</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('bibliography-window')">_</div><div class="btn-win" onclick="closeWindow('bibliography-window')">X</div></div>
+            </div>
+            <div class="window-body">
+                <div class="file-list">
+                    <a href="assets/RedpillBluepill.pdf" download class="file-item">
+                        <img src="assets/file.png" class="file-ico-sm">RedpillBluepill.pdf
+                    </a>
+                    <a href="assets/CadaverExquisito.pdf" download class="file-item">
+                        <img src="assets/file.png" class="file-ico-sm">CadaverExquisito.pdf
+                    </a>
+                    <a href="assets/SimulacroSimulation.pdf" download class="file-item">
+                        <img src="assets/file.png" class="file-ico-sm">SimulacroSimulation.pdf
+                    </a>
                 </div>
             </div>
         </div>
@@ -360,47 +395,45 @@
             initGame();
         }
 
-        /* --- ASCII ART GIGANTE --- */
         const asciiLogo = `
-                              ##########                              
-                             ############                             
-                            ##############                            
-                           ################                           
-                          ##################                          
-                         ####################                         
-                         #########  #########                         
-                        #########%  ##########                        
-                       ##########    ##########                       
-                      ##########################                      
-                      ###########################                     
-                     ############################                     
-                    ##############################                    
-                   ##########            ##########                   
-                  ##########              ##########                  
-                 ##########       ##       ##########                 
-                ###########  ############  ###########                
-                ########################### ##########                
-               #################      #################               
-              ################    ##    ##### ##########              
-             ################   ## ###  #################             
-            ########### #####   ##  ##  ###### ##########             
-            ########### ######   ####   #####  ###########            
-              ########## ######       ####### ##########              
-               ############################ ###########               
-                ########### ############## ###########                
-                  ##########     ####     ##########                  
-                   ###########          ###########                   
-                    ###########        ###########                    
-                     ###########      ##########                      
-                       ###########   ##########                       
-                        ########### ##########                        
-                         ####################                         
-                           ################                           
-                            ##############                            
-                             ############                             
+                              ##########                     
+                            ############                     
+                           ##############                    
+                           ################                   
+                          ##################                  
+                         ####################                 
+                         #########  #########                 
+                        #########%  ##########                
+                       ##########    ##########               
+                      ##########################              
+                      ###########################             
+                     ############################             
+                    ##############################            
+                   ##########            ##########           
+                  ##########              ##########          
+                  ##########       ##       ##########        
+                 ###########  ############  ###########       
+                 ########################### ##########       
+                #################      #################      
+               ################    ##    ##### ##########     
+              ################   ## ###  #################    
+             ########### #####   ##  ##  ###### ##########    
+             ########### ######   ####   #####  ###########   
+              ########## ######       ####### ##########      
+               ############################ ###########       
+                ########### ############## ###########        
+                  ##########     ####     ##########          
+                   ###########          ###########           
+                    ###########        ###########            
+                     ###########      ##########              
+                       ###########   ##########               
+                        ########### ##########                
+                         ####################                 
+                           ################                   
+                            ##############                    
+                             ############                     
         `;
         
-        /* --- BIOS DETALLADA Y EXTENSA (RESTAURADA) --- */
         const biosLines = [
             "Award Modular BIOS v4.51PG, An Energy Star Ally",
             "Copyright (C) 1984-98, Award Software, Inc.",
@@ -433,7 +466,6 @@
                 AS.hdd(); 
                 const cursor = document.createElement('span'); cursor.className = 'cursor'; cursor.innerText = '_'; p.appendChild(cursor);
                 
-                // Variar velocidad para realismo
                 let delay = Math.random() * 100 + 50;
                 if (line.includes("Detecting")) delay = 600; 
                 if (line.includes("Memory")) delay = 800;
@@ -455,7 +487,7 @@
             AS.boot(); updateTaskList();
         }
 
-        /* --- LOGIN & TRANSICIÓN (CORREGIDO) --- */
+        /* --- LOGIN & TRANSICIÓN --- */
         const passInput = document.getElementById('pass-input');
         passInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); AS.click(); });
         passInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') attemptLogin(); });
@@ -465,29 +497,19 @@
         async function triggerCinematicTransition(text, url, slowEmphasis = false) {
             const screen = document.getElementById('transition-screen');
             screen.style.display = 'flex';
-            screen.innerHTML = ''; // Limpiar
-            screen.style.opacity = '1'; // Reset opacity
-            
-            // Detectar el rango de índices para "NADA" si es necesario
-            // "Con toda esta información y nadie entiende nada"
-            // "nada" son los ultimos 4 caracteres.
+            screen.innerHTML = '';
+            screen.style.opacity = '1';
             
             for (let i = 0; i < text.length; i++) {
                 let char = text[i];
                 let speed = 50;
                 let span = document.createElement('span');
                 
-                // Espacios como &nbsp; para que no colapsen
-                if (char === ' ') {
-                    span.innerHTML = '&nbsp;';
-                } else {
-                    span.textContent = char;
-                }
+                if (char === ' ') { span.innerHTML = '&nbsp;'; } else { span.textContent = char; }
 
-                // CORRECCIÓN: Detectar si estamos en los últimos 4 caracteres para el énfasis
                 if (slowEmphasis && i >= text.length - 4) {
                     span.className = 'emphasis';
-                    speed = 300; // Muy lento para cada letra de "NADA"
+                    speed = 300; 
                 }
                 
                 screen.appendChild(span);
@@ -495,12 +517,8 @@
                 await sleep(speed);
             }
             
-            await sleep(2000); // Pausa para leer
-            
-            // Fade Out
+            await sleep(2000); 
             screen.style.opacity = '0';
-            
-            // Esperar que termine el fade para redirigir
             await sleep(1000);
             window.location.href = url;
         }
@@ -537,7 +555,7 @@
             }
         }
 
-        /* --- VENTANAS (LIMITADOR) --- */
+        /* --- VENTANAS --- */
         function focusWindow(el) { el.style.zIndex = ++zIndex; el.style.display = 'flex'; updateTaskList(); }
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
         function minWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
@@ -564,7 +582,7 @@
             let newTop = cy - diffY;
             
             const maxLeft = window.innerWidth - dragEl.offsetWidth;
-            const maxTop = window.innerHeight - dragEl.offsetHeight - 30; // 30px barra
+            const maxTop = window.innerHeight - dragEl.offsetHeight - 30;
             
             newLeft = Math.max(0, Math.min(newLeft, maxLeft));
             newTop = Math.max(0, Math.min(newTop, maxTop));
@@ -577,7 +595,8 @@
         /* --- BARRA & MENU --- */
         function updateTaskList() {
             const list = document.getElementById('task-list'); list.innerHTML = '';
-            ['login-window', 'about-window', 'recycle-window', 'minesweeper-window'].forEach(id => {
+            // MODIFICADO: Agregado 'authors-window' a la lista de tareas
+            ['login-window', 'about-window', 'bibliography-window', 'authors-window', 'recycle-window', 'minesweeper-window'].forEach(id => {
                 const el = document.getElementById(id);
                 if(id === 'login-window' || el.style.display === 'flex' || el.dataset.opened === 'true') {
                     if(el.style.display==='flex') el.dataset.opened='true';
@@ -594,6 +613,11 @@
         function reboot() { document.getElementById('desktop').style.display='none'; document.getElementById('bios-screen').style.display='flex'; runBios(); }
         function shutdown() { document.getElementById('shutdown-screen').style.display='flex'; document.getElementById('shutdown-fill').style.width='100%'; setTimeout(() => { window.location.href="https://donmayoneso.github.io/ods6proGest/"; }, 2000); }
 
+        /* --- NUEVA FUNCIÓN DE VERIFICACIÓN --- */
+        function checkSystem() {
+            alert("⚠️ AVISO DE SISTEMA v4.02 ⚠️\n\n> Esta interfaz está optimizada y diseñada para computadoras de escritorio.\n> La implementación móvil (WAP) se encuentra actualmente en desarrollo.\n\nPresione Aceptar para continuar bajo su propia responsabilidad.");
+            systemStart();
+        }
         /* --- JUEGO --- */
         let msGrid = []; const ROWS=9, COLS=9, MINES=10;
         function initGame() {

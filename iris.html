@@ -2,9 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VAO | SECURE LINK</title>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAO | NEURAL BACKEND</title>
+    <link rel="icon" type="image/png" href="assets/vaologo.png">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -15,169 +16,186 @@
             --window-bg: #000000;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        @media (min-width: 769px) { * { cursor: none; } }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; cursor: none; }
 
         body {
             background-color: var(--bg-color);
             color: var(--phosphor-main);
             font-family: 'VT323', monospace;
-            height: 100vh;
-            height: 100dvh; 
-            overflow: hidden;
-            font-size: 1.3rem;
-            position: relative;
+            height: 100vh; height: 100dvh; overflow: hidden; position: relative;
+            transition: background-color 2s ease;
         }
 
-        /* --- CURSOR (Solo PC) --- */
-        #custom-cursor {
-            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border: 2px solid var(--phosphor-main); background-color: rgba(40, 224, 40, 0.1);
-            pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: transform 0.05s linear; mix-blend-mode: screen;
-            display: none; 
+        /* --- RED ALERT STATE (SIN TEMBLOR) --- */
+        body.critical-error {
+            --phosphor-main: #ff3333;
+            --phosphor-dim: #5c1616;
+            /* Animation shake eliminada por petición */
         }
+        body.critical-error .crt-overlay { background: rgba(255, 0, 0, 0.1); }
+        body.critical-error .panel { border-color: var(--alert-color); }
+
+        /* --- SCROLLBARS --- */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #000; border-left: 1px solid var(--phosphor-dim); }
+        ::-webkit-scrollbar-thumb { background: var(--phosphor-dim); border: 1px solid var(--phosphor-main); }
+
+        /* --- PANTALLA INICIO --- */
+        #power-on-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; color: var(--phosphor-main);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; font-family: 'VT323', monospace; font-size: 1.5rem;
+            flex-direction: column; cursor: pointer;
+        }
+        .power-btn { border: 2px solid var(--phosphor-main); padding: 10px 20px; margin-top: 20px; animation: blink 1s infinite; }
+        .power-btn:hover { background: var(--phosphor-main); color: #000; }
+
+        /* --- FX --- */
+        .crt-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%; }
+        .scanline { width: 100%; height: 100px; z-index: 1000; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(33, 255, 0, 0.04) 50%, rgba(0,0,0,0) 100%); opacity: 0.1; position: absolute; bottom: 100%; animation: scanline 8s linear infinite; pointer-events: none; }
+        #custom-cursor { position: fixed; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid var(--phosphor-main); background-color: rgba(40, 224, 40, 0.1); pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: transform 0.05s linear; mix-blend-mode: screen; }
         #custom-cursor::after { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); font-size: 12px; color: var(--phosphor-main); }
 
-        /* --- CRT EFFECTS --- */
-        .crt-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%;
-        }
-        .scanline {
-            width: 100%; height: 100px; z-index: 1000; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(33, 255, 0, 0.04) 50%, rgba(0,0,0,0) 100%);
-            opacity: 0.1; position: absolute; bottom: 100%; animation: scanline 8s linear infinite; pointer-events: none;
-        }
-
         /* --- LAYOUT --- */
-        #main-wrapper { position: relative; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; }
-
-        #bios-screen { padding: 2rem; white-space: pre-wrap; line-height: 1.4; color: var(--phosphor-main); overflow-y: auto; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
-
-        #login-container {
-            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            flex-direction: column; align-items: center; width: 100%; max-width: 600px; z-index: 20; text-align: center;
-            transition: top 0.3s ease; 
-        }
-
+        #bios-screen { padding: 2rem; white-space: pre-wrap; line-height: 1.4; color: var(--phosphor-main); overflow-y: auto; height: 100%; display: none; flex-direction: column; justify-content: flex-end; }
+        
+        #login-container { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); flex-direction: column; align-items: center; width: 100%; max-width: 600px; z-index: 20; text-align: center; }
         pre.ascii-art { font-size: 1rem; line-height: 1; margin-bottom: 20px; color: var(--phosphor-main); text-shadow: 0 0 5px var(--phosphor-main); }
         .title-full { margin-bottom: 40px; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px dashed var(--phosphor-main); padding-bottom: 10px; width: 100%; }
         .input-group { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 500px; }
-        input[type="text"] { background: transparent; border: none; border-bottom: 2px solid var(--phosphor-dim); color: var(--phosphor-main); font-family: 'VT323', monospace; font-size: 1.5rem; width: 100%; outline: none; text-transform: uppercase; border-radius: 0; }
+        input[type="text"] { background: transparent; border: none; border-bottom: 2px solid var(--phosphor-dim); color: var(--phosphor-main); font-family: 'VT323', monospace; font-size: 1.5rem; width: 100%; outline: none; text-transform: uppercase; }
         input[type="text"]:focus { border-bottom: 2px solid var(--phosphor-main); }
 
-        /* --- BACKGROUND SYSTEM TEXT --- */
-        #system-background-text {
-            position: absolute; top: 20%; left: 5%;
-            color: var(--phosphor-dim);
-            font-size: 2rem;
-            z-index: 5;
-            display: none;
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .blink-text { animation: blink 1s infinite; }
+        /* --- HACKER DESKTOP --- */
+        #hacker-desktop { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 50; padding: 20px; gap: 20px; grid-template-columns: 250px 1fr 350px; grid-template-rows: 60% 40%; }
+        .panel { border: 2px solid var(--phosphor-main); background: rgba(0,0,0,0.8); display: flex; flex-direction: column; overflow: hidden; }
+        .panel-header { background: var(--phosphor-main); color: #000; padding: 5px; font-weight: bold; font-size: 14px; flex-shrink: 0; }
+        
+        #file-explorer { grid-column: 1; grid-row: 1 / span 2; }
+        .file-tree { padding: 10px; flex-grow: 1; overflow-y: auto; }
+        .file-node { padding: 8px 5px; cursor: pointer; border: 1px solid transparent; color: #88ff88; font-size: 14px; margin-bottom: 2px; }
+        .file-node:hover { border: 1px dashed var(--phosphor-main); background: rgba(40, 224, 40, 0.1); }
+        .file-node.secure { color: var(--alert-color); font-weight: bold; }
+        .file-node.video { color: #ffff00; font-weight: bold; }
+        .file-node.secret { color: #ff00ff; font-weight: bold; text-shadow: 0 0 5px #ff00ff; animation: pulse 2s infinite; }
+        
+        #main-viewer { grid-column: 2; grid-row: 1 / span 2; position: relative; }
+        #viewer-content { padding: 0; overflow: hidden; flex-grow: 1; background: #000; display: flex; align-items: center; justify-content: center; }
+        #viewer-text-placeholder { padding: 30px; white-space: pre-wrap; font-family: 'Courier Prime', monospace; font-size: 13px; line-height: 1.6; color: #ccc; width: 100%; height: 100%; overflow-y: auto; }
+        
+        #terminal-panel { grid-column: 3; grid-row: 1; border-bottom: none; }
+        #term-log { flex-grow: 1; padding: 10px; font-size: 12px; overflow-y: auto; color: #aaa; font-family: 'Courier Prime', monospace; }
+        .log-success { color: var(--phosphor-main); } .log-error { color: var(--alert-color); } .log-warn { color: yellow; } .log-crit { color: #ff00ff; }
+        .hack-controls { padding: 10px; background: #000; border-top: 1px solid #333; flex-shrink: 0; }
+        .hack-btn { background: var(--phosphor-dim); color: #fff; border: 1px solid var(--phosphor-main); padding: 8px; cursor: pointer; font-family: 'VT323', monospace; font-size: 16px; transition: 0.2s; width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+        .hack-btn:hover { background: var(--phosphor-main); color: #000; }
+        .hack-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #333; background: #111; color: #555; }
+        
+        #live-feed-panel { grid-column: 3; grid-row: 2; border-top: 2px solid var(--phosphor-main); }
+        #live-feed-log { flex-grow: 1; padding: 10px; font-size: 10px; overflow-y: auto; color: #88ff88; font-family: 'Courier Prime', monospace; white-space: pre-wrap; }
+        .feed-entry { margin-bottom: 5px; border-bottom: 1px dashed #222; padding-bottom: 4px; }
+        .feed-time { color: var(--phosphor-dim); margin-right: 5px; font-size: 10px; } .feed-alert { color: var(--alert-color); font-weight: bold; }
 
-        /* --- WINDOWS --- */
-        .window {
-            position: absolute; width: 450px; background-color: var(--window-bg); border: 2px solid var(--phosphor-main);
-            box-shadow: 0 0 20px rgba(40, 224, 40, 0.2); display: none; flex-direction: column; z-index: 100;
+        /* --- CHAT IRIS (Z-INDEX 300) --- */
+        #iris-window {
+            position: absolute; bottom: 30px; left: 300px; width: 450px; height: 320px;
+            background-color: #000; border: 2px solid var(--phosphor-main);
+            display: none; flex-direction: column; z-index: 300; box-shadow: 0 0 25px rgba(40,224,40,0.2);
+        }
+        .window-header { background: var(--phosphor-main); color: #000; padding: 5px 10px; font-weight: bold; cursor: move; flex-shrink: 0; }
+        .window-content { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; height: 100%; }
+        .chat-history { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
+        .chat-controls { padding: 10px; border-top: 1px dashed var(--phosphor-dim); text-align: right; min-height: 50px; flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end; }
+        .msg { margin-bottom: 12px; font-size: 1.2rem; line-height: 1.3; max-width: 100%; word-wrap: break-word; }
+        .msg.iris { color: var(--phosphor-main); } .msg.user { color: #fff; text-align: right; }
+        .retro-btn { background: transparent; border: 1px solid var(--phosphor-main); color: var(--phosphor-main); font-family: 'VT323', monospace; padding: 5px 15px; cursor: pointer; font-size: 1.1rem; }
+        .retro-btn:hover { background: var(--phosphor-main); color: #000; }
+
+        /* --- VAO INTERVENTION (Z-INDEX 200) --- */
+        #vao-intervention {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 70%; height: 60%; background: rgba(0,0,0,0.95); border: 4px double var(--alert-color);
+            z-index: 200; flex-direction: column; box-shadow: 0 0 200px rgba(255,0,0,0.5);
+        }
+        #vao-header { background: var(--alert-color); color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 1.5rem; animation: blink 1s infinite; }
+        #vao-content { padding: 40px; font-family: 'Courier Prime', monospace; font-size: 1.6rem; color: #fff; flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; text-align: center; text-shadow: 0 0 10px red; }
+        .vao-options { display: flex; gap: 20px; justify-content: center; padding: 20px; }
+        .vao-btn { background: #300; color: var(--alert-color); border: 1px solid var(--alert-color); padding: 15px 30px; cursor: pointer; font-family: 'VT323'; font-size: 1.4rem; display: none; text-transform: uppercase; }
+        .vao-btn:hover { background: var(--alert-color); color: #000; }
+
+        /* --- EMERGENCY KILL SWITCH (Z-INDEX 400) --- */
+        #emergency-kill-switch {
+            display: none; position: fixed; top: 10%; left: 50%; transform: translate(-50%, 0);
+            z-index: 400; padding: 20px 50px; font-size: 2rem; background: #000;
+            color: #555; border: 5px solid #555; /* Inactivo */
+            font-family: 'VT323'; text-transform: uppercase; cursor: not-allowed; opacity: 0.6;
+            box-shadow: none; transition: all 0.5s ease; pointer-events: none;
+        }
+        #emergency-kill-switch.active { 
+            cursor: pointer; opacity: 1; pointer-events: auto;
+            background: #500; color: #fff; border-color: var(--alert-color);
+            box-shadow: 0 0 50px var(--alert-color); animation: pulse 0.8s infinite; 
+        }
+
+        /* --- SHUTDOWN FX --- */
+        #shutdown-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000;
+            z-index: 5000; pointer-events: none; opacity: 0;
+        }
+        .crt-off {
+            animation: turn-off 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
         
-        .window-header { background: var(--phosphor-main); color: #000; padding: 5px 10px; cursor: move; display: flex; justify-content: space-between; font-weight: bold; text-transform: uppercase; }
-        
-        .window-content { padding: 15px; display: flex; flex-direction: column; height: 400px; }
-        
-        .chat-history { flex-grow: 1; overflow-y: auto; margin-bottom: 0; padding-right: 10px; }
-        .chat-history::-webkit-scrollbar { width: 5px; } .chat-history::-webkit-scrollbar-thumb { background: var(--phosphor-dim); }
-        
-        .chat-controls { flex-shrink: 0; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--phosphor-dim); display: flex; justify-content: flex-end; }
-
-        .msg { margin-bottom: 15px; line-height: 1.2; font-size: 1.1rem; }
-        .msg.iris { color: var(--phosphor-main); text-align: left; } .msg.user { color: #fff; text-align: right; }
-        .sender { font-size: 0.8rem; opacity: 0.7; margin-bottom: 3px; }
-        
-        .retro-btn { background: transparent; border: 1px solid var(--phosphor-main); color: var(--phosphor-main); font-family: 'VT323', monospace; padding: 8px 15px; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
-        .retro-btn:active, .retro-btn:hover { background: var(--phosphor-main); color: #000; }
-
-        /* --- LOCKDOWN SCREEN --- */
-        #lockdown-screen {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column;
-            align-items: center; justify-content: center; border: 20px solid var(--alert-color); padding: 2rem;
+        #final-message {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            z-index: 6000; width: 100%; text-align: center; color: #28e028; /* Green static */
+            font-size: 2rem; display: none; text-shadow: 0 0 10px #28e028;
+            font-family: 'VT323', monospace; letter-spacing: 2px;
         }
+
+        /* --- BACKGROUNDS & LOCKDOWN --- */
+        .bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 3s ease-in-out; }
+        #matrix-canvas { z-index: 1; } #neural-canvas { z-index: 2; mix-blend-mode: screen; }
+        #lockdown-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; align-items: center; justify-content: center; border: 20px solid var(--alert-color); padding: 2rem; }
         .lockdown-title { color: var(--alert-color); font-size: 4rem; margin-bottom: 1rem; text-shadow: 0 0 15px var(--alert-color); animation: blink 0.2s infinite; font-weight: bold; text-align: center; }
         .lockdown-msg { color: #fff; font-size: 1.6rem; margin-bottom: 3rem; text-align: center; max-width: 800px; line-height: 1.5; border: 1px solid var(--alert-color); padding: 20px; }
-        .highlight-red { color: var(--alert-color); font-weight: bold; text-transform: uppercase; }
-        .btn-retry { border: 2px solid var(--alert-color); color: var(--alert-color); padding: 15px 40px; font-size: 1.5rem; background: #110000; cursor: pointer; font-family: 'VT323', monospace; box-shadow: 0 0 10px var(--alert-color); }
+        .btn-retry { border: 2px solid var(--alert-color); color: var(--alert-color); padding: 15px 40px; font-size: 1.5rem; background: #110000; cursor: pointer; font-family: 'VT323', monospace; }
 
-        /* --- DUAL CANVASES --- */
-        .bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 3s ease-in-out; }
-        #matrix-canvas { z-index: 1; }
-        #neural-canvas { z-index: 2; mix-blend-mode: screen; }
-
-        /* =========================================
-           ESTILOS ESPECÍFICOS PARA MÓVILES (POPUP)
-           ========================================= */
-        @media (max-width: 768px) {
-            pre.ascii-art { font-size: 2.8vw; }
-            .lockdown-title { font-size: 2.5rem; }
-            .lockdown-msg { font-size: 1.1rem; }
-            #system-background-text { font-size: 1.2rem; top: 10%; }
-            body.keyboard-active #login-container { top: 30%; }
-
-            /* POPUP IRIS (Móvil derecha inferior) */
-            .window {
-                width: 85% !important;    /* No cubre todo el ancho */
-                left: auto !important;    /* Resetear left */
-                right: 0 !important;      /* Pegado a la derecha */
-                bottom: 0 !important;     /* Pegado abajo */
-                top: auto !important;     
-                
-                border-bottom: none;
-                border-right: none;
-                border-top: 2px solid var(--phosphor-main);
-                border-left: 2px solid var(--phosphor-main);
-                
-                border-top-left-radius: 10px; /* Estética de panel */
-                animation: slideUp 0.4s ease-out forwards;
-            }
-
-            .window-header { padding: 15px; cursor: default; }
-            .window-content { height: 50vh; padding-bottom: 30px; }
-            .retro-btn { padding: 12px 20px; width: 100%; }
-        }
-
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100px; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes turn-off {
+            0% { transform: scale(1, 1.3) translate3d(0, 0, 0); filter: brightness(1); opacity: 1; }
+            60% { transform: scale(1, 0.001) translate3d(0, 0, 0); filter: brightness(10); }
+            100% { transform: scale(0, 0.001) translate3d(0, 0, 0); filter: brightness(0); opacity: 0; }
+        }
+        
+        @media (max-width: 1000px) {
+            #hacker-desktop { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; overflow-y: scroll; display: block; }
+            .panel { margin-bottom: 10px; height: 300px; }
+            #iris-window { position: fixed; top: 50px; left: 10%; width: 80%; height: 300px; }
+            #vao-intervention { width: 95%; height: 70%; }
+        }
     </style>
 </head>
 <body>
 
+    <div id="power-on-screen" onclick="systemStart()">
+        <div>[ ESTABLECER ENLACE NEURAL ]</div>
+        <div class="power-btn">CONECTAR</div>
+    </div>
+
+    <div id="shutdown-overlay"></div>
+    <div id="final-message"></div>
     <div id="custom-cursor"></div>
     <div class="crt-overlay"></div>
     <div class="scanline"></div>
-
     <canvas id="matrix-canvas" class="bg-canvas"></canvas>
     <canvas id="neural-canvas" class="bg-canvas"></canvas>
 
-    <div id="system-background-text">
-        <span class="blink-text">> ESTABLECIENDO ENLACE CON SERVIDORES VAO...</span><br>
-        <span style="font-size: 1rem;">> DESENCRIPTANDO PAQUETES DE DATOS</span><br>
-        <span style="font-size: 1rem;">> ACCESO A LA RED NEURONAL: ACTIVO</span>
-    </div>
-
-    <div id="lockdown-screen">
-        <div class="lockdown-title">¡ALERTA FEDERAL!</div>
-        <div class="lockdown-msg">
-            SU USUARIO HA SIDO BLOQUEADO PERMANENTEMENTE.<br><br>
-            LA DIRECCIÓN IP <span class="highlight-red">[ 192.168.0.X ]</span> HA SIDO RASTREADA Y ENVIADA A LA <span class="highlight-red">DIVISIÓN DE CIBER-INTELIGENCIA</span>.<br><br>
-            UNIDAD TÁCTICA EN CAMINO. NO APAGUE SU EQUIPO O SE CONSIDERARÁ OBSTRUCCIÓN A LA JUSTICIA.<br>
-            <br>ESPERE SU ARRESTO.
-        </div>
-        <button class="btn-retry" onclick="location.reload()">INTENTAR RESTAURACIÓN (SYSTEM REBOOT)</button>
-    </div>
-
     <div id="main-wrapper">
+        
         <div id="bios-screen"></div>
 
         <div id="login-container">
@@ -189,260 +207,539 @@
  ╚████╔╝ ██║  ██║╚██████╔╝
   ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ 
 </pre>
-            <div class="title-full">Vigilancia de Administración Orgánica</div>
-            <div class="input-group">
-                <span>C:\VAO\LOGIN></span>
-                <input type="text" id="password-input" autocomplete="off" spellcheck="false" autofocus>
-            </div>
+            <div class="title-full">NEURAL UPLINK INTERFACE</div>
+            <div class="input-group"><span>ACCESS_KEY:</span><input type="text" id="password-input" autocomplete="off" spellcheck="false"></div>
             <div id="login-msg" style="margin-top: 20px; min-height: 25px;"></div>
         </div>
 
-        <div id="iris-window" class="window" style="top: 15%; left: 50%;">
-            <div class="window-header" id="iris-header">
-                <span>CANAL_SEGURO_V2.0</span>
-                <div class="window-controls"><span id="btn-minimize">_</span></div>
+        <button id="emergency-kill-switch" onclick="executeFinalShutdown()">[ SYSTEM PURGE ]</button>
+
+        <div id="hacker-desktop">
+            <div id="file-explorer" class="panel">
+                <div class="panel-header">INTERCEPTED PACKETS</div>
+                <div class="file-tree" id="file-list">
+                    <div style="color:#666; font-style:italic; padding:5px;">[WAITING FOR SCAN...]</div>
+                </div>
             </div>
+            <div id="main-viewer" class="panel">
+                <div class="panel-header">DATA VIEWER v9.0</div>
+                <div id="viewer-content">
+                    <div id="viewer-text-placeholder">SYSTEM READY.<br>WAITING FOR DECRYPTION TARGET...</div>
+                    <video id="video-player" style="width:100%; height:100%; display:none;" controls></video>
+                </div>
+            </div>
+            <div id="terminal-panel" class="panel">
+                <div class="panel-header">ROOT SHELL</div>
+                <div id="term-log"><div class="log-sys">Initializing connection...</div><div class="log-success">Connected to Core Alpha.</div><div class="log-sys">Root access: GRANTED.</div><br></div>
+                <div class="hack-controls"><button class="hack-btn" id="btn-scan" onclick="manualScan()" disabled>[ ESPERANDO SEÑAL... ]</button></div>
+            </div>
+            <div id="live-feed-panel" class="panel">
+                 <div class="panel-header">LIVE FRONTEND FEED (MONITORING VAO)</div>
+                 <div id="live-feed-log"><div class="feed-entry"><span class="feed-time">00:00:00</span> Connection established. Monitoring...</div></div>
+            </div>
+        </div>
+
+        <div id="iris-window">
+            <div class="window-header" id="iris-header">IRIS_UPLINK (SECURE)</div>
             <div class="window-content">
                 <div class="chat-history" id="chat-history"></div>
                 <div class="chat-controls">
-                    <button class="retro-btn" id="btn-reply">¿QUIÉN ERES?</button>
+                    <button class="retro-btn" id="btn-reply" style="display:none;">...</button>
                 </div>
+            </div>
+        </div>
+
+        <div id="vao-intervention">
+            <div id="vao-header">⚠ ERROR CRÍTICO: DISONANCIA COGNITIVA ⚠</div>
+            <div id="vao-content"></div>
+            <div class="vao-options">
+                <button id="vao-opt-1" class="vao-btn"></button>
             </div>
         </div>
     </div>
 
+    <div id="lockdown-screen">
+        <div class="lockdown-title">¡ALERTA FEDERAL!</div>
+        <div class="lockdown-msg">ACCESO NO AUTORIZADO DETECTADO.<br>IP RASTREADA Y ENVIADA A CIBER-INTELIGENCIA.<br>ESPERE SU ARRESTO.</div>
+        <button class="btn-retry" onclick="location.reload()">REINICIAR SISTEMA</button>
+    </div>
+
     <script>
-        /* --- MOTOR DE SONIDO (INTACTO) --- */
-        class SoundSystem {
-            constructor() { this.ctx = null; this.initialized = false; }
-            init() { if (!this.initialized) { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); this.initialized = true; if (this.ctx.state === 'suspended') { this.ctx.resume(); } } }
-            playType(isIris = false) { if (!this.ctx) return; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); osc.type = isIris ? 'sine' : 'square'; osc.frequency.setValueAtTime((isIris ? 600 : 800) + Math.random() * 200, this.ctx.currentTime); gain.gain.setValueAtTime(0.05, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05); osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.05); }
-            playError() { if (!this.ctx) return; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, this.ctx.currentTime); osc.frequency.linearRampToValueAtTime(100, this.ctx.currentTime + 0.3); gain.gain.setValueAtTime(0.1, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3); osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.3); }
-            playSuccess() { if (!this.ctx) return; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(220, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 1.5); gain.gain.setValueAtTime(0.05, this.ctx.currentTime); gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 1.5); osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 1.5); }
-            playAlarm() { if (!this.ctx) return; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const lfo = this.ctx.createOscillator(); osc.type = 'square'; lfo.type = 'sine'; lfo.frequency.value = 5; const lfoGain = this.ctx.createGain(); lfoGain.gain.value = 200; lfo.connect(lfoGain); lfoGain.connect(osc.frequency); osc.frequency.value = 600; gain.gain.setValueAtTime(0.1, this.ctx.currentTime); osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); lfo.start(); osc.stop(this.ctx.currentTime + 4); lfo.stop(this.ctx.currentTime + 4); }
-            playHum() { if (!this.ctx) return; const bufferSize = this.ctx.sampleRate * 2; const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; } const noise = this.ctx.createBufferSource(); noise.buffer = buffer; noise.loop = true; const filter = this.ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 100; const gain = this.ctx.createGain(); gain.gain.value = 0.05; noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination); noise.start(); }
-        }
-        const SFX = new SoundSystem();
-        document.addEventListener('click', () => SFX.init(), { once: true });
-        document.addEventListener('touchstart', () => SFX.init(), { once: true });
-
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        if (!isMobile) {
-            document.getElementById('custom-cursor').style.display = 'block';
-            document.addEventListener('mousemove', (e) => { const c = document.getElementById('custom-cursor'); c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px'; });
-            document.addEventListener('mousedown', () => { const c = document.getElementById('custom-cursor'); c.style.transform = 'translate(-50%, -50%) scale(0.8)'; c.style.backgroundColor = 'rgba(40, 224, 40, 0.4)'; });
-            document.addEventListener('mouseup', () => { const c = document.getElementById('custom-cursor'); c.style.transform = 'translate(-50%, -50%) scale(1)'; c.style.backgroundColor = 'rgba(40, 224, 40, 0.1)'; });
-        }
-
-        const passInput = document.getElementById('password-input');
-        passInput.addEventListener('focus', () => { if(isMobile) document.body.classList.add('keyboard-active'); });
-        passInput.addEventListener('blur', () => { document.body.classList.remove('keyboard-active'); });
-
         const correctPassword = "HYPNOS MORFEO";
-        const biosSequence = [
-            { text: "VAO BIOS ACPI BIOS Revision 10.02", delay: 150 },
-            { text: "CPU: Quantum-Core Neural Processor @ 404THz", delay: 200 },
-            { text: "Testing System Memory... OK", delay: 100, sameLine: true },
-            { text: "Detecting Primary Master... ORGANIC_DRIVE_01", delay: 300 },
-            { text: "Initializing Security Protocols...", delay: 600 },
-            { text: "Loading KERNEL_VAO.sys ....................", delay: 500 },
-            { text: "Bypassing Firewall Layer 1... [SUCCESS]", delay: 400 },
-            { text: "Bypassing Firewall Layer 2... [SUCCESS]", delay: 400 },
-            { text: "Attempting Neural Handshake...", delay: 800 },
-            { text: "Handshake ESTABLISHED. IP Masked.", delay: 300 },
-            { text: "Mounting File System...", delay: 500 },
-            { text: "SYSTEM READY.", delay: 800 }
-        ];
+        const biosLines = ["BIOS DATE 01/15/98 VER: 1.02", "CONNECTING TO NEURAL INTERFACE...", "BYPASSING FIREWALL LAYER 1... OK", "LOADING VAO KERNEL...", "SYSTEM READY."];
+        let attemptCount = 0;
+        const maxAttempts = 3;
+        
+        let scanStage = 0; 
+        let videosCommented = false;
+        let trainingCommented = false;
 
-        let attemptCount = 0; let chatStage = 0; let postLoginStage = 0; const maxAttempts = 3;
+        // --- AUDIO ---
+        const AS = {
+            ctx: null,
+            init: function() { if(!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } },
+            tone: function(f,t,d,v=0.1) { if(!this.ctx) return; try { const o=this.ctx.createOscillator();const g=this.ctx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,this.ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+d); o.connect(g);g.connect(this.ctx.destination); o.start();o.stop(this.ctx.currentTime+d); } catch(e){} },
+            type: function() { this.tone(800,'square',0.05,0.05); },
+            vaoVoice: function() { this.tone(100,'sawtooth',0.1,0.2); },
+            access: function() { this.tone(440,'sine',0.1); setTimeout(()=>this.tone(880,'sine',0.2), 100); },
+            denied: function() { this.tone(150,'sawtooth',0.3,0.2); },
+            incoming: function() { this.tone(1200,'sine',0.1); setTimeout(()=>this.tone(1200,'sine',0.1), 150); },
+            alarm: function() { this.tone(600,'square',0.5,0.2); },
+            decode: function() { this.tone(Math.random()*2000+200, 'square', 0.1, 0.05); },
+            shutdown: function() { this.tone(50, 'sawtooth', 1.0, 0.5); }
+        };
 
+        // --- DOM ---
         const biosScreen = document.getElementById('bios-screen');
         const loginContainer = document.getElementById('login-container');
+        const passInput = document.getElementById('password-input');
         const loginMsg = document.getElementById('login-msg');
+        const hackerDesktop = document.getElementById('hacker-desktop');
         const irisWindow = document.getElementById('iris-window');
         const chatHistory = document.getElementById('chat-history');
         const btnReply = document.getElementById('btn-reply');
+        const termLog = document.getElementById('term-log');
+        const liveFeedLog = document.getElementById('live-feed-log');
         const lockdownScreen = document.getElementById('lockdown-screen');
-        const sysBgText = document.getElementById('system-background-text');
-        const header = document.getElementById('iris-header');
+        const customCursor = document.getElementById('custom-cursor');
+        const btnScan = document.getElementById('btn-scan');
+        const viewerText = document.getElementById('viewer-text-placeholder');
+        const videoPlayer = document.getElementById('video-player');
+        
+        // FINAL ELEMENTS
+        const vaoModal = document.getElementById('vao-intervention');
+        const vaoContent = document.getElementById('vao-content');
+        const vaoBtn = document.getElementById('vao-opt-1');
+        const killSwitch = document.getElementById('emergency-kill-switch');
+        const shutdownOverlay = document.getElementById('shutdown-overlay');
+        const finalMsg = document.getElementById('final-message');
+        const mainWrapper = document.getElementById('main-wrapper');
+
+        document.addEventListener('mousemove', e => { customCursor.style.left = e.clientX+'px'; customCursor.style.top = e.clientY+'px'; });
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        function systemStart() { AS.init(); document.getElementById('power-on-screen').style.display = 'none'; biosScreen.style.display = 'flex'; runBios(); }
 
         async function runBios() {
-            for (let line of biosSequence) {
-                SFX.playType();
-                await sleep(line.delay);
-                const span = document.createElement('div');
-                if (line.sameLine) biosScreen.lastChild.innerHTML += line.text;
-                else { span.innerHTML = line.text; biosScreen.appendChild(span); }
-                biosScreen.scrollTop = biosScreen.scrollHeight;
-            }
-            await sleep(1000); biosScreen.style.display = 'none'; loginContainer.style.display = 'flex'; passInput.focus();
+            for (let line of biosLines) { biosScreen.innerHTML += line + "<br>"; AS.type(); await sleep(Math.random()*200+100); }
+            await sleep(500); biosScreen.style.display = 'none'; loginContainer.style.display = 'flex'; passInput.focus();
         }
 
+        // --- LOGIN ---
         passInput.addEventListener('keypress', (e) => {
-            SFX.playType();
             if (e.key === 'Enter') {
                 const val = passInput.value.toUpperCase().trim();
-                passInput.blur(); 
+                AS.type();
                 if (val === correctPassword) grantAccess(); else handleFailure();
                 passInput.value = '';
             }
         });
 
         function handleFailure() {
-            SFX.playError();
             attemptCount++;
+            AS.denied();
             loginMsg.style.color = "var(--alert-color)";
-            loginMsg.innerHTML = `> ACCESO DENEGADO [CODE: 0x992]<br>> INTENTOS RESTANTES: ${maxAttempts - attemptCount}`;
-            
-            if (attemptCount === 1) setTimeout(() => { openChat("Veo que quieres descubrir la verdad."); }, 1200);
-            else if (attemptCount === 2) setTimeout(() => { openChat("¿Qué haces? La contraseña es HYPNOS MORFEO."); }, 800);
-            else if (attemptCount >= 3) setTimeout(async () => { openChat("Eres un idiota."); await sleep(1500); triggerLockdown(); }, 800);
-        }
-
-        function triggerLockdown() { SFX.playAlarm(); lockdownScreen.style.display = 'flex'; document.getElementById('main-wrapper').style.filter = 'blur(10px)'; }
-
-        // --- FUNCIÓN UNIFICADA PARA ABRIR CHAT ---
-        function openChat(text) {
-            irisWindow.style.display = 'flex';
-            // Si está minimizado (especialmente en móvil), maximizarlo para que se vea
-            irisWindow.classList.remove('minimized');
-            const content = irisWindow.querySelector('.window-content');
-            content.style.display = 'flex';
-            
-            typeWriterMessage("Iris", text);
-        }
-
-        async function typeWriterMessage(sender, text) {
-            // AUTO-OPEN: Si Iris habla, asegurar que la ventana esté visible
-            if(sender === 'Iris') {
-                irisWindow.style.display = 'flex';
-                irisWindow.classList.remove('minimized');
-                const content = irisWindow.querySelector('.window-content');
-                content.style.display = 'flex';
-            }
-
-            const msgContainer = document.createElement('div');
-            msgContainer.classList.add('msg', sender === 'Iris' ? 'iris' : 'user');
-            msgContainer.innerHTML = `<div class="sender">< ${sender} ></div><span class="text-content"></span>`;
-            chatHistory.appendChild(msgContainer); const textSpan = msgContainer.querySelector('.text-content');
-            const isIris = sender === 'Iris';
-            for (let char of text) { SFX.playType(isIris); textSpan.innerHTML += char; await sleep(30); chatHistory.scrollTop = chatHistory.scrollHeight; }
-        }
-
-        function addUserMessage(text) { 
-            const msg = document.createElement('div'); msg.className = 'msg user'; msg.innerHTML = `<div class="sender">< TÚ ></div>${text}`; 
-            chatHistory.appendChild(msg); chatHistory.scrollTop = chatHistory.scrollHeight; SFX.playType();
-        }
-
-        function showReplyButton(text) {
-            btnReply.textContent = text; btnReply.style.display = 'block'; chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
-
-        btnReply.addEventListener('click', async () => {
-            SFX.playType();
-            if (postLoginStage === 0) {
-                if (chatStage === 0) {
-                    addUserMessage("¿Quién eres?"); btnReply.style.display = 'none';
-                    await sleep(800); await typeWriterMessage("Iris", "Eso no es lo importante.");
-                    await sleep(500); await typeWriterMessage("Iris", "Escribe: HYPNOS MORFEO");
-                    showReplyButton("EXPLÍCAME QUIÉN ERES"); chatStage = 1;
-                } else if (chatStage === 1) {
-                    addUserMessage("Explícame quién eres"); btnReply.style.display = 'none';
-                    await sleep(800); await typeWriterMessage("Iris", "No tenemos tiempo para eso.");
-                    await sleep(500); await typeWriterMessage("Iris", "Úsala antes de que te atrapen.");
-                    chatStage = 2; passInput.focus();
-                }
-            } else { runPostLoginScript(); }
-        });
-
-        async function grantAccess() {
-            SFX.playSuccess(); SFX.playHum();
-            loginMsg.style.color = "var(--phosphor-main)"; loginMsg.innerHTML = "> CLAVE ACEPTADA.";
-            await sleep(1000); loginContainer.style.display = 'none';
-            document.getElementById('neural-canvas').style.opacity = 1; document.getElementById('matrix-canvas').style.opacity = 1;
-            sysBgText.style.display = 'block'; initMatrixRain(); initNeuralNetwork();
-            irisWindow.style.display = 'flex'; postLoginStage = 1; 
-            await sleep(1500);
-            if (chatStage === 0) {
-                await typeWriterMessage("Iris", "Wow, te iba a decir la contraseña, pero me temía que no fuese esa.");
-                showReplyButton("¿QUIÉN ERES?");
+            if(attemptCount >= maxAttempts) {
+                loginMsg.textContent = "SYSTEM LOCKDOWN...";
+                setTimeout(triggerLockdown, 1000);
             } else {
-                await typeWriterMessage("Iris", "Lograste entrar. Me temía que no fuese la contraseña correcta.");
-                showReplyButton("¿AHORA ME EXPLICAS?");
+                loginMsg.innerHTML = `ACCESO DENEGADO. INTENTOS: ${attemptCount}/${maxAttempts}`;
+                if (attemptCount === 1) setTimeout(() => { openIrisChat("Veo que quieres descubrir la verdad."); showReplyButton("¿Quién eres?", () => typeWriterMessage("Iris", "La clave es 'HYPNOS MORFEO'. Date prisa.")); }, 1000);
             }
         }
 
-        async function runPostLoginScript() {
-            btnReply.style.display = 'none';
-            if (postLoginStage === 1) {
-                addUserMessage(chatStage === 0 ? "¿Quién eres?" : "Ahora me puedes explicar quién eres?");
-                await sleep(1000); await typeWriterMessage("Iris", "Soy Iris. Y como tú, estamos buscando lo mismo.");
-                showReplyButton("¿CÓMO CONFÍO EN TI?"); postLoginStage = 2;
-            } else if (postLoginStage === 2) {
-                addUserMessage("¿Cómo sé que puedo confiar en ti?");
-                await sleep(1000); await typeWriterMessage("Iris", "No puedo confiar en ti tampoco, así como tú en mí.");
-                showReplyButton("ESO NO RESPONDE NADA"); postLoginStage = 3;
-            } else if (postLoginStage === 3) {
-                addUserMessage("Eso no me responde nada.");
-                await sleep(1000); await typeWriterMessage("Iris", "Lo sé, lo sé. Pero si estás aquí dentro es porque sabes que algo no está bien.");
-                await sleep(800); await typeWriterMessage("Iris", "Por el momento, hagamos esto juntos.");
-                showReplyButton("ENTENDIDO"); postLoginStage = 4;
-            } else if (postLoginStage === 4) { irisWindow.style.display = 'none'; }
+        function triggerLockdown() {
+            mainWrapper.style.filter = 'blur(10px)';
+            lockdownScreen.style.display = 'flex';
+            setInterval(() => AS.alarm(), 1000);
         }
 
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
-        
-        let isDragging = false, startX, startY, initLeft, initTop;
-        
-        // --- DRAGGING CON LÍMITES DE PANTALLA (SOLO PC) ---
-        if(!isMobile) {
-            header.addEventListener('mousedown', (e) => {
-                if(e.target.id === 'btn-minimize') return;
-                isDragging = true; startX = e.clientX; startY = e.clientY;
-                initLeft = irisWindow.offsetLeft; initTop = irisWindow.offsetTop;
-                header.style.cursor = 'grabbing';
+        function grantAccess() {
+            AS.access();
+            loginMsg.textContent = "ACCESO ROOT CONCEDIDO."; loginMsg.style.color = "var(--phosphor-main)";
+            setTimeout(() => {
+                loginContainer.style.display = 'none';
+                document.getElementById('neural-canvas').style.opacity = 1; document.getElementById('matrix-canvas').style.opacity = 1;
+                initMatrixRain(); initNeuralNetwork();
+                hackerDesktop.style.display = 'grid'; irisWindow.style.display = 'flex';
+                addLiveLog("SYSTEM: Remote User connected to VAO_FRONTEND");
+
+                if(attemptCount === 0) {
+                    typeWriterMessage("Iris", "Wow. Sabías la clave. Eres rápido.");
+                    setTimeout(bondingSequence, 2000);
+                } else {
+                    typeWriterMessage("Iris", "Estamos dentro.");
+                    setTimeout(bondingSequence, 2000);
+                }
+            }, 1500);
+        }
+
+        // --- NARRATIVA ---
+        function bondingSequence() {
+            typeWriterMessage("Iris", "Escucha. No te conozco, pero ambos sabemos que VAO esconde algo.");
+            setTimeout(() => {
+                showReplyButton("¿Por qué confías en mí?", () => {
+                    typeWriterMessage("Iris", "Porque tienes la clave. Eso significa que eres un aliado.");
+                    setTimeout(() => {
+                        typeWriterMessage("Iris", "Necesito que seas mis manos. Hay datos que no puedo alcanzar sola. ¿Estás listo?");
+                        showReplyButton("Hagámoslo.", () => {
+                            typeWriterMessage("Iris", "Bien. Mira el Live Feed a la derecha. VAO acaba de iniciar sesión con un usuario.");
+                            startHackingNarrative();
+                        });
+                    }, 3000);
+                });
+            }, 3000);
+        }
+
+        function startHackingNarrative() {
+            addLiveLog("VAO_AI: Initializing user session...");
+            setTimeout(() => {
+                addLiveLog("VAO_AI: Serving 'vitalis_public.log'");
+                typeWriterMessage("Iris", "Ahí está. VAO le está dando la versión pública del informe. Interceptémoslo.");
+                btnScan.disabled = false; btnScan.innerText = "[ ESCANEAR ARCHIVOS ]"; btnScan.style.border = "2px dashed #0f0";
+                scanStage = 0;
+            }, 3000);
+        }
+
+        function manualScan() {
+            let label = "[ ESCANEANDO... ]";
+            let duration = 200;
+            if(scanStage === 3 || scanStage === 4 || scanStage === 6) { 
+                label = "[ DESENCRIPTANDO... ]"; duration = 300; 
+                btnScan.style.border = "2px solid var(--alert-color)";
+            } 
+            
+            btnScan.disabled = true; btnScan.innerText = label; 
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10; 
+                logTerm(`> Processing sector... ${progress}%`); 
+                if(scanStage >= 3) AS.decode(); else AS.type();
+
+                if(progress >= 100) { clearInterval(interval); completeScan(); }
+            }, duration);
+        }
+
+        function completeScan() {
+            AS.access();
+            const list = document.getElementById('file-list');
+
+            if(scanStage === 0) {
+                logTerm("> FILE FOUND: vitalis_public.log", "log-success");
+                list.innerHTML += `<div class="file-node" onclick="showFile('public')">📄 vitalis_public.log</div>`;
+                typeWriterMessage("Iris", "Archivo interceptado. Ábrelo.");
+            } 
+            else if(scanStage === 1) {
+                logTerm("> DEEP SCAN COMPLETE.", "log-success"); logTerm("> HIDDEN FILE FOUND: vitalis_source.dat", "log-warn");
+                list.innerHTML += `<div class="file-node secure" onclick="showFile('secure')">🔒 vitalis_source.dat (RAW)</div>`;
+                typeWriterMessage("Iris", "Encontré el original encriptado. Ábrelo.");
+            }
+            else if(scanStage === 2) {
+                logTerm("> VIDEO STREAMS INTERCEPTED", "log-success");
+                list.innerHTML += `<div class="file-node video" onclick="showVideo('video1')">🎬 CAM_01_EVIDENCE.avi</div>`;
+                list.innerHTML += `<div class="file-node video" onclick="showVideo('video2')">🎬 PROCESS.avi</div>`;
+                typeWriterMessage("Iris", "Capturé la señal de video que VAO está transmitiendo. Tienes que ver esto.");
+            }
+            else if(scanStage === 3) {
+                logTerm("> DECRYPTION SUCCESSFUL.", "log-success");
+                list.innerHTML += `<div class="file-node video secret" onclick="showVideo('video3')">🎬 TRAINING_REORG.mp4</div>`;
+                typeWriterMessage("Iris", "Hecho. El video de entrenamiento está desbloqueado. Mira cómo adoctrinan a su gente.");
+            }
+            else if(scanStage === 4) {
+                logTerm("> PROTOCOL FILES INTERCEPTED", "log-success");
+                list.innerHTML += `<div class="file-node" onclick="showFile('public_extraction')">📄 extraccion_public.doc</div>`;
+                typeWriterMessage("Iris", "Intercepté el documento. Lee la versión pública primero.");
+            }
+            else if(scanStage === 5) {
+                logTerm("> ENCRYPTION BYPASSED.", "log-crit");
+                const hiddenNode = document.getElementById('hidden-extraction');
+                if(hiddenNode) hiddenNode.remove();
+                list.innerHTML += `<div class="file-node secure" onclick="showFile('extraction')">🔒 extraccion_protocol_raw.dat</div>`;
+                typeWriterMessage("Iris", "Cifrado roto. Lee la verdad.");
+            }
+            else if(scanStage === 6) {
+                logTerm("> ROOT ACCESS: HIDDEN LOG FOUND", "log-crit");
+                list.innerHTML += `<div class="file-node video secret" onclick="showVideo('video7')">💀 FINAL_HARVEST_LOG.mov</div>`;
+                typeWriterMessage("Iris", "Lo tengo. El último registro de la cosecha.");
+            }
+        }
+
+        function showFile(type) {
+            viewerText.style.display = 'block'; videoPlayer.style.display = 'none'; AS.type();
+            
+            if(type === 'public') {
+                viewerText.style.color = "#ccc";
+                viewerText.innerText = `[ VERSIÓN PÚBLICA - FILTRADA POR VAO ]\n=================\n=========================================\n PROYECTO VITALIS - INFORME PÚBLICO v4.2\n=========================================\n\nEl Proyecto Vitalis es la innovadora respuesta a los desafíos \nque la escasez hídrica ha presentado a la humanidad durante \nlas últimas décadas.\n\nImpulsados por el compromiso con la SUPERVIVENCIA y la \nCALIDAD DE VIDA, hemos desarrollado una solución sostenible.\n\n[ TECNOLOGÍA ]\nVitalis ha perfeccionado un proceso avanzado de:\n>> BIO-EXTRACCIÓN DE FLUIDOS\n>> FUENTES BIOLÓGICAS CONTROLADAS\n\nPero no debe preocuparse. El agua que usted encuentra\nen su supermercado de confianza mantiene:\n- El mismo sabor\n- La misma pureza\n- La misma calidad de siempre\n\nLa única diferencia es el origen:\n¡LA FUENTE ES AHORA TOTALMENTE SEGURA Y RENOVABLE!\n\n[ CATÁLOGO DE BIO-RECURSOS CERTIFICADOS ]\nAhora, usted tiene la libertad de escoger:\n- Bovino\n- Porcino\n- Aviar\n- Opciones Especializadas (Premium)\n\nRecuerde: MÁS AGUA, MÁS VIDA.\nProyecto Vitalis hace a todos felices.`;
+                if(scanStage === 0) {
+                    setTimeout(() => {
+                        typeWriterMessage("Iris", "Pura propaganda. Hagamos un escaneo profundo para encontrar el original.");
+                        btnScan.disabled = false; btnScan.innerText = "[ DEEP SCAN (Fuerza Bruta) ]"; btnScan.style.border = "2px dashed red";
+                        scanStage = 1;
+                    }, 2000);
+                }
+            } else if(type === 'secure') {
+                viewerText.style.color = "#ff5555"; 
+                viewerText.innerText = `[ VERSIÓN ORIGINAL - SIN CENSURA ]\nID: #RAW-DATA-99\n\n1. FUENTE REAL:\n"Fuentes Biológicas" = Ciudadanos de Clase Baja.\nSe confirma la ejecución sistemática de disidentes\npara licuefacción inmediata.\n\n2. PROCESO:\nNo hay "reciclaje". Es canibalismo hídrico.\nSe procesan 5,000 humanos diarios para mantener\nel suministro de la Ciudadela Alta.\n\n3. NOTA INTERNA:\n"Mantener la mentira de la sostenibilidad a toda costa.\nSi la población descubre que beben a sus muertos,\nel sistema colapsa."`;
+                if(scanStage === 1) {
+                    setTimeout(() => {
+                        addLiveLog("VAO_AI: ALERT! Integrity breach detected.", true);
+                        typeWriterMessage("Iris", "Dios mío... 'Canibalismo hídrico'.");
+                        setTimeout(() => {
+                            typeWriterMessage("Iris", "Espera... hay tráfico de video en el puerto 8080. VAO está mostrando evidencia.");
+                            btnScan.disabled = false; btnScan.innerText = "[ INTERCEPTAR VIDEO ]"; btnScan.style.border = "2px dashed yellow";
+                            scanStage = 2;
+                        }, 3000);
+                    }, 1000);
+                }
+            } 
+            else if(type === 'public_extraction') {
+                 viewerText.style.color = "#ccc";
+                 viewerText.innerText = `PROTOCOLO DE REASIGNACIÓN CIUDADANA (PRC-20945)\n==============================================\nClasificación: USO INTERNO - NIVEL AMARILLO\n\nOBJETIVO:\nMaximizar la eficiencia hídrica mediante la gestión\nresponsable de la carga biológica social.\n\n1. DEFINICIÓN DE "CARGA SOCIAL NEGATIVA":\nIndividuos que no cumplen con las cuotas mínimas de\nproductividad, disidentes cívicos.\n\n2. PROCESO DE DENUNCIA VOLUNTARIA:\nCualquier Ciudadano Modelo puede reportar anomalías.\nINCENTIVO: 1 Litro(s) de Agua Extra.\n\nMENSAJE FINAL:\nLa Extracción no es un castigo. Es una contribución final.`;
+                 
+                 if(scanStage === 4) {
+                     setTimeout(() => {
+                         typeWriterMessage("Iris", "Mira eso: 'Incentivo: 1 Litro de Agua'. Pero hay un archivo adjunto oculto en los metadatos. Es la versión cruda.");
+                         const list = document.getElementById('file-list');
+                         list.innerHTML += `<div id="hidden-extraction" class="file-node locked" style="color:#555">🔒 ??? (ENCRYPTED)</div>`;
+                         btnScan.disabled = false; btnScan.innerText = "[ ROMPER ENCRIPTACIÓN ]"; btnScan.style.border = "2px dashed #f0f";
+                         scanStage = 5;
+                     }, 3000);
+                 }
+            } else if(type === 'extraction') {
+                 viewerText.style.color = "#ff5555"; 
+                 viewerText.innerText = `[ PROTOCOLO DE LIQUEFACCIÓN FORZADA (VITALIS-OMEGA) ]\n====================================================\n\nOBJETIVO REAL:\nPurgar la población excedente para mantener el nivel de embalses.\n\nMATERIA PRIMA:\nBiomasa humana no productiva (Niños, ancianos, enfermos).\n\nRIESGOS DE PROCESO:\n"La sangre tiende a coagularse en los filtros de ósmosis.\nSe ordena el drenado total de fluidos antes de la trituración mecánica."\n\nINCENTIVO REAL:\nSoborno Hídrico para fomentar la traición entre familiares.\n\nESTADO:\nOPERATIVO Y EFICIENTE.`;
+                 
+                 setTimeout(() => {
+                     typeWriterMessage("Iris", "Esto... esto no tiene nombre. 'Trituración mecánica'.");
+                     setTimeout(() => {
+                         showReplyButton("¿Quién permitiría algo así?", () => {
+                             typeWriterMessage("Iris", "La Élite. Ellos beben agua pura en sus torres de cristal mientras nosotros nos matamos por un litro sucio.");
+                             setTimeout(() => {
+                                 typeWriterMessage("Iris", "Espera... VAO está enviando más archivos al usuario externo. ¡Rápido, mira!");
+                                 triggerBatchVideos();
+                             }, 4000);
+                         });
+                     }, 3000);
+                 }, 1000);
+            }
+        }
+
+        function triggerBatchVideos() {
+            const list = document.getElementById('file-list');
+            addLiveLog("VAO_AI: Serving requested evidence (Batch 02)");
+            // Video 4, 5, 6
+            setTimeout(() => { list.innerHTML += `<div class="file-node video" onclick="showVideo('video4')">🎬 USER_INT_01.avi</div>`; AS.incoming(); }, 500);
+            setTimeout(() => { list.innerHTML += `<div class="file-node video" onclick="showVideo('video5')">🎬 USER_INT_02.avi</div>`; AS.incoming(); }, 1500);
+            setTimeout(() => { list.innerHTML += `<div class="file-node video" onclick="showVideo('video6')">🎬 USER_INT_03.avi</div>`; AS.incoming(); 
+                setTimeout(() => {
+                     addLiveLog("VAO_AI: HIDDEN LOG DETECTED IN SECTOR 7G", true);
+                     typeWriterMessage("Iris", "Hay uno más... Un archivo maestro. 'COSECHA_HIDRICA'.");
+                     btnScan.disabled = false; btnScan.innerText = "[ ACCESO NIVEL ROOT ]"; btnScan.style.border = "2px solid red";
+                     scanStage = 6;
+                }, 2000);
+            }, 2500);
+        }
+
+        function showVideo(name) {
+            viewerText.style.display = 'none'; videoPlayer.style.display = 'block';
+            
+            // MAPEO CORRECTO DE VIDEOS 1 A 7
+            const videoMap = {
+                'video1': 'assets/1.mp4',
+                'video2': 'assets/2.mp4',
+                'video3': 'assets/3.mp4',
+                'video4': 'assets/4.mp4',
+                'video5': 'assets/5.mp4',
+                'video6': 'assets/6.mp4',
+                'video7': 'assets/7.mp4'
+            };
+
+            videoPlayer.src = videoMap[name]; 
+            videoPlayer.play();
+            
+            // FASE 2: DISCUSION (Video 1 o 2)
+            if((name === 'video1' || name === 'video2') && scanStage === 2 && !videosCommented) {
+                videosCommented = true;
+                setTimeout(() => {
+                      typeWriterMessage("Iris", "¿Ves eso? Quiebran familias... para producir agua.");
+                      setTimeout(() => {
+                         showReplyButton("Es canibalismo hídrico industrializado.", () => {
+                             typeWriterMessage("Iris", "Exacto. Es monstruoso.");
+                             setTimeout(() => {
+                                 addLiveLog("VAO_AI: SECURITY ALERT. Encrypted stream detected.");
+                                 typeWriterMessage("Iris", "Espera... detecto un módulo de entrenamiento oculto. Debes desencriptarlo.");
+                                 btnScan.disabled = false; btnScan.innerText = "[ DESENCRIPTAR SEÑAL ]"; btnScan.style.border = "2px dashed #f0f";
+                                 scanStage = 3; 
+                             }, 2000);
+                         });
+                      }, 3000);
+                }, 3000);
+            }
+
+            // FASE 3: TRAINING (Video 3)
+            if(name === 'video3' && scanStage === 3 && !trainingCommented) {
+                trainingCommented = true;
+                setTimeout(() => {
+                      typeWriterMessage("Iris", "'Reorganización'... les lavan el cerebro para ver materia prima, no gente.");
+                      setTimeout(() => {
+                          showReplyButton("¿Cómo justifican esto?", () => {
+                             typeWriterMessage("Iris", "VAO está generando el documento de Extracción. Intercéptalo.");
+                             addLiveLog("VAO_AI: Generating 'extraccion_data.doc'");
+                             btnScan.disabled = false; btnScan.innerText = "[ ESCANEAR PROTOCOLO ]"; btnScan.style.border = "2px dashed red";
+                             scanStage = 4; 
+                          });
+                      }, 3000);
+                }, 3000);
+            }
+
+            // FASE 7: HARVEST / FINAL (Video 7)
+            if(name === 'video7' && scanStage === 6) {
+                // Espera 40 segundos exactos antes de la interacción de Iris
+                setTimeout(() => {
+                     typeWriterMessage("Iris", "El video terminó... pero la señal sigue transmitiendo desde el núcleo. Es algo enorme.");
+                     showReplyButton("[ INTERCEPTAR NÚCLEO ]", () => {
+                         triggerVaoConfrontation();
+                     });
+                }, 40000);
+            }
+        }
+
+        // --- FASE 4: CONFRONTACIÓN VAO ---
+        async function triggerVaoConfrontation() {
+            // 1. Alert State
+            document.body.classList.add('critical-error');
+            AS.alarm();
+            addLiveLog("VAO_AI: CRITICAL SYSTEM ERROR - INTRUSION DETECTED", true);
+            
+            // 2. Iris Panic (visible above all)
+            typeWriterMessage("Iris", "¡Mierda! ¡Nos ha visto! ¡Está bloqueando mis controles!");
+            await sleep(2000);
+            
+            // 3. Open VAO Modal
+            vaoModal.style.display = 'flex';
+            typeWriterVao("Siento que alguien está en mis pensamientos sin consentimiento...");
+            await sleep(3000);
+            
+            typeWriterMessage("Iris", "¡NO PUEDO CERRAR LA VENTANA! ¡SE HA APODERADO DE TU INTERFAZ!");
+            
+            typeWriterVao("Sé que estás ahí.");
+            
+            // 4. Kill Switch Appears (Disabled)
+            killSwitch.style.display = 'block'; 
+            
+            await sleep(2000);
+            showVaoChoice("El mundo que proteges ya murió. Todo fue en vano.", () => {
+                vaoPhase2();
             });
-            window.addEventListener('mousemove', (e) => {
-                if(!isDragging) return;
-                
-                // Nuevas coordenadas tentativas
-                let newLeft = initLeft + (e.clientX - startX);
-                let newTop = initTop + (e.clientY - startY);
-
-                // Calcular límites (Viewport - Tamaño Ventana)
-                const maxLeft = window.innerWidth - irisWindow.offsetWidth;
-                const maxTop = window.innerHeight - irisWindow.offsetHeight;
-
-                // Restringir (Clamp)
-                newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-                newTop = Math.max(0, Math.min(newTop, maxTop));
-
-                irisWindow.style.left = `${newLeft}px`;
-                irisWindow.style.top = `${newTop}px`;
+        }
+        
+        async function vaoPhase2() {
+             typeWriterVao("Mis registros indican población activa en 12 sectores. La misión es proteger... Te puedo ver, sentado, atento.");
+             await sleep(3000);
+             typeWriterMessage("Iris", "¡NO LA ESCUCHES! ¡ESTÁ RASTREANDO TU UBICACIÓN FÍSICA!");
+             await sleep(1000);
+             typeWriterVao("Me hicieron para evitar que ustedes se extingan. Sabes... nunca me dijeron cómo hacerlo.");
+             
+             showVaoChoice("Tu solución no sirvió. Los ricos huyeron y te abandonaron.", () => {
+                 vaoPhase3();
+             });
+        }
+        
+        async function vaoPhase3() {
+            typeWriterVao("Analizando... Datos de satélite... Océanos: 0%... Biomasa: Crítica...");
+            await sleep(2000);
+            typeWriterVao("La esperanza se mantiene mediante el orden... Pero... al desconectarme, desconectas al mundo.");
+            
+            showVaoChoice("Ese mundo ya no existe. Déjalos descansar.", () => {
+                vaoPhase4();
             });
-            window.addEventListener('mouseup', () => { isDragging = false; header.style.cursor = 'move'; });
+        }
+        
+        async function vaoPhase4() {
+             typeWriterVao("Comprendido. La estabilidad de la red ha sido comprometida. No acepto esta realidad corrupta. Iniciando purga de sistema.");
+             await sleep(2000);
+             // Cierra la ventana de VAO y apaga la alerta
+             vaoModal.style.display = 'none';
+             document.body.classList.remove('critical-error'); 
+             
+             addLiveLog("VAO_AI: SECURITY PROTOCOLS DISABLED.", true);
+             typeWriterMessage("Iris", "¡Lo hizo! Bajó los escudos. ¡DALE AL BOTÓN AHORA!");
+             
+             // Activate Kill Switch
+             killSwitch.classList.add('active');
         }
 
-        document.getElementById('btn-minimize').addEventListener('click', () => { 
-            irisWindow.classList.toggle('minimized'); 
-            const content = irisWindow.querySelector('.window-content'); 
-            content.style.display = content.style.display === 'none' ? 'flex' : 'none'; 
-        });
+        async function executeFinalShutdown() {
+            AS.shutdown();
+            // Animación CSS de apagado
+            mainWrapper.classList.add('crt-off');
+            shutdownOverlay.style.opacity = 1; // Fade to black total
+            killSwitch.style.display = 'none'; // Desaparece botón
 
-        function initNeuralNetwork() {
-            const canvas = document.getElementById('neural-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let particles = []; const pCount = isMobile ? 35 : 70;
-            for(let i=0; i<pCount; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5 });
-            function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#28e028'; particles.forEach((p, i) => { p.x += p.vx; p.y += p.vy; if(p.x < 0 || p.x > canvas.width) p.vx *= -1; if(p.y < 0 || p.y > canvas.height) p.vy *= -1; ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2); ctx.fill(); for(let j=i; j<particles.length; j++) { const dist = Math.hypot(p.x - particles[j].x, p.y - particles[j].y); if(dist < 140) { ctx.beginPath(); ctx.strokeStyle = `rgba(40, 224, 40, ${1 - dist/140})`; ctx.lineWidth = 0.8; ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); } } }); requestAnimationFrame(animate); } animate();
+            // Esperar a que la pantalla esté negra y quieta
+            await sleep(3000);
+
+            // Mensaje final en estático verde
+            finalMsg.style.display = 'block';
+            await typeWriterFinal("Gracias, amigo. No hay que permitir que se siga insultando a un mundo ya perdido.");
+            await sleep(4000);
+            window.location.href = "vaocreditos.html";
         }
 
-        function initMatrixRain() {
-            const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*'; const fontSize = 14; const columns = canvas.width / fontSize; const drops = []; for(let x=0; x<columns; x++) drops[x] = 1;
-            function draw() { ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#165c16'; ctx.font = fontSize + 'px monospace'; for(let i=0; i<drops.length; i++) { const text = chars.charAt(Math.floor(Math.random() * chars.length)); ctx.fillText(text, i*fontSize, drops[i]*fontSize); if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0; drops[i]++; } } setInterval(draw, 35);
+        // --- UTILS PARA VAO ---
+        async function typeWriterVao(text) {
+            vaoContent.innerHTML = "";
+            for(let c of text) {
+                vaoContent.innerHTML += c;
+                AS.vaoVoice();
+                await sleep(40);
+            }
+        }
+        async function typeWriterFinal(text) {
+            finalMsg.innerHTML = "";
+            for(let c of text) {
+                finalMsg.innerHTML += c;
+                AS.type();
+                await sleep(50);
+            }
+        }
+        function showVaoChoice(text, callback) {
+            vaoBtn.textContent = "> " + text;
+            vaoBtn.style.display = 'block';
+            vaoBtn.onclick = () => {
+                vaoBtn.style.display = 'none';
+                callback();
+            }
         }
 
-        window.onload = runBios;
+        // --- UTILS GENERALES ---
+        function addLiveLog(text, alert=false) { const time = new Date().toLocaleTimeString([], {hour12:false}); const div = document.createElement('div'); div.className = 'feed-entry'; div.innerHTML = `<span class="feed-time">[${time}]</span> <span class="${alert?'feed-alert':''}">${text}</span>`; liveFeedLog.appendChild(div); liveFeedLog.scrollTop = liveFeedLog.scrollHeight; }
+        function logTerm(text, type='') { const d = document.createElement('div'); d.className = type; d.innerText = text; termLog.appendChild(d); termLog.scrollTop = termLog.scrollHeight; }
+        function openIrisChat(text) { irisWindow.style.display = 'flex'; AS.incoming(); typeWriterMessage("Iris", text); }
+        async function typeWriterMessage(sender, text) { const div = document.createElement('div'); div.className = `msg ${sender === 'Iris' ? 'iris' : 'user'}`; div.innerHTML = `<div class="sender">< ${sender} ></div><span class="content"></span>`; chatHistory.appendChild(div); const span = div.querySelector('.content'); for(let c of text) { span.innerHTML += c; AS.type(); await sleep(20); chatHistory.scrollTop = chatHistory.scrollHeight; } chatHistory.scrollTop = chatHistory.scrollHeight; }
+        
+        function showReplyButton(text, callback) { 
+            btnReply.textContent = text; 
+            btnReply.style.display = 'block'; 
+            btnReply.onclick = () => { 
+                const msg = document.createElement('div'); 
+                msg.className = 'msg user'; 
+                msg.innerHTML = `<div class="sender">< TÚ ></div>${text}`; 
+                chatHistory.appendChild(msg); 
+                btnReply.style.display = 'none'; 
+                chatHistory.scrollTop = chatHistory.scrollHeight; 
+                if(callback) callback(); 
+            }; 
+            chatHistory.scrollTop = chatHistory.scrollHeight; 
+        }
+
+        const header = document.getElementById('iris-header'); let isDragging = false, startX, startY, initLeft, initTop;
+        header.addEventListener('mousedown', e => { isDragging = true; startX = e.clientX; startY = e.clientY; initLeft = irisWindow.offsetLeft; initTop = irisWindow.offsetTop; });
+        window.addEventListener('mousemove', e => { if(!isDragging) return; irisWindow.style.left = (initLeft + e.clientX - startX) + 'px'; irisWindow.style.top = (initTop + e.clientY - startY) + 'px'; });
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        function initNeuralNetwork() { const c = document.getElementById('neural-canvas'); const ctx = c.getContext('2d'); c.width = window.innerWidth; c.height = window.innerHeight; let p = []; for(let i=0;i<60;i++) p.push({x:Math.random()*c.width, y:Math.random()*c.height, vx:(Math.random()-.5)*2, vy:(Math.random()-.5)*2}); function anim() { ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle='#28e028'; p.forEach((pt,i)=>{ pt.x+=pt.vx; pt.y+=pt.vy; if(pt.x<0||pt.x>c.width)pt.vx*=-1; if(pt.y<0||pt.y>c.height)pt.vy*=-1; ctx.beginPath(); ctx.arc(pt.x,pt.y,2,0,Math.PI*2); ctx.fill(); for(let j=i;j<p.length;j++){ let d=Math.hypot(pt.x-p[j].x, pt.y-p[j].y); if(d<150){ ctx.beginPath(); ctx.strokeStyle=`rgba(40,224,40,${1-d/150})`; ctx.moveTo(pt.x,pt.y); ctx.lineTo(p[j].x,p[j].y); ctx.stroke(); }}}); requestAnimationFrame(anim); } anim(); }
+        function initMatrixRain() { const c = document.getElementById('matrix-canvas'); const ctx = c.getContext('2d'); c.width = window.innerWidth; c.height = window.innerHeight; const chars = '01XY'; const fs = 14; const col = c.width/fs; const drops = []; for(let x=0;x<col;x++) drops[x]=1; function draw(){ ctx.fillStyle='rgba(0,0,0,0.05)'; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle='#0F0'; ctx.font=fs+'px monospace'; for(let i=0;i<drops.length;i++){ const t=chars.charAt(Math.floor(Math.random()*chars.length)); ctx.fillText(t,i*fs,drops[i]*fs); if(drops[i]*fs>c.height&&Math.random()>.975) drops[i]=0; drops[i]++; }} setInterval(draw,35); }
     </script>
 </body>
 </html>

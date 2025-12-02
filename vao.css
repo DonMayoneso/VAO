@@ -1,0 +1,166 @@
+:root {
+    --desktop: #008080;
+    --win-gray: #c0c0c0;
+    --win-light: #ffffff;
+    --win-dark: #808080;
+    --win-black: #000000;
+    --win-blue: #000080;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+body { background-color: #000; font-family: 'Segoe UI', Tahoma, sans-serif; height: 100vh; overflow: hidden; cursor: default; }
+
+/* FADE IN */
+#desktop { 
+    display: block; width: 100%; height: 100%; 
+    background-color: var(--desktop); position: relative; overflow: hidden;
+    animation: fadeIn 1.5s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+#desktop::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('assets/vaologo.svg'); background-repeat: no-repeat;
+    background-position: center; background-size: 40%; opacity: 0.15;
+    filter: brightness(0) invert(1); pointer-events: none; z-index: 0;
+}
+
+/* IMAGENES */
+img { image-rendering: pixelated; pointer-events: none; }
+.icon-img { width: 32px; height: 32px; object-fit: contain; margin-bottom: 2px; }
+.file-ico-sm { width: 16px; height: 16px; margin-right: 6px; object-fit: contain; vertical-align: middle; }
+.menu-icon { width: 20px; height: 20px; object-fit: contain; margin-right: 10px; vertical-align: middle; }
+.start-icon-img { width: 16px; height: 16px; object-fit: contain; margin-right: 2px; vertical-align: middle; }
+
+/* ICONOS */
+.desktop-icon { position: absolute; width: 72px; display: flex; flex-direction: column; align-items: center; cursor: pointer; text-align: center; z-index: 50; padding: 5px; border: 1px solid transparent; }
+.desktop-icon:active { border: 1px dotted #fff; background: rgba(0,0,128,0.2); }
+.icon-label { color: #fff; font-size: 11px; margin-top: 2px; padding: 1px 3px; text-shadow: 1px 1px #000; }
+
+/* VENTANAS */
+.window {
+    background-color: var(--win-gray);
+    border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
+    border-right: 2px solid var(--win-black); border-bottom: 2px solid var(--win-black);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; position: absolute;
+    width: max-content; min-width: 250px; z-index: 100;
+    display: none; 
+}
+
+.title-bar {
+    background: var(--win-blue); color: var(--win-light);
+    padding: 3px 4px; font-weight: bold; font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center; cursor: default;
+}
+
+.window-controls { display: flex; gap: 3px; }
+.btn-win {
+    background: var(--win-gray); border: 1px outset #fff; width: 16px; height: 16px;
+    font-size: 10px; line-height: 12px; text-align: center; color: #000; cursor: pointer; font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+}
+.btn-win:active { border: 1px inset #fff; }
+.window-body { padding: 10px; color: var(--win-black); font-size: 13px; }
+
+/* ESTILOS ESPECÍFICOS */
+#vao-chat-window { top: 10%; right: 5%; width: 380px; }
+.chat-area { height: 350px; background: #fff; border: 2px inset var(--win-gray); overflow-y: auto; padding: 10px; margin-bottom: 5px; font-family: 'Segoe UI', sans-serif; font-size: 12px; }
+.chat-msg { margin-bottom: 12px; line-height: 1.4; display: flex; flex-direction: column; }
+.msg-vao { color: #000080; font-weight: bold; margin-bottom: 2px; }
+.msg-user { align-self: flex-end; color: #000; background: #e0e0e0; padding: 4px 8px; border-radius: 4px; border: 1px solid #999; max-width: 90%; text-align: right; }
+.chat-input-area { display: flex; gap: 5px; min-height: 40px; }
+.chat-btn { padding: 4px 8px; background: var(--win-gray); border: 2px outset #fff; cursor: pointer; flex-grow: 1; font-weight: bold; font-size: 11px; text-align: left; white-space: normal; line-height: 1.2; display: flex; align-items: center; }
+.chat-btn:active { border: 2px inset #fff; }
+
+#vitalis-window { top: 15%; left: 5%; width: 450px; height: 350px; }
+.folder-content { background: #fff; border: 2px inset var(--win-gray); flex-grow: 1; padding: 10px; display: flex; flex-wrap: wrap; gap: 15px; align-content: flex-start; height: 230px; overflow-y: auto; }
+.file-icon { width: 70px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+.file-icon:hover .file-name { background: var(--win-blue); color: #fff; }
+.file-icon img { width: 32px; height: 32px; margin-bottom: 2px; }
+.file-name { font-size: 11px; padding: 1px 3px; word-break: break-all; }
+
+#notepad-window, #notepad-extraction { top: 10%; left: 15%; width: 550px; z-index: 200; }
+.notepad-area { width: 100%; height: 400px; border: 2px inset var(--win-gray); background: #fff; font-family: 'Courier New', monospace; padding: 15px; overflow-y: scroll; resize: none; outline: none; font-size: 14px; line-height: 1.4; }
+
+#video-window-1, #video-window-2 { top: 20%; left: 30%; width: 350px; z-index: 201; }
+#video-window-2 { top: 25%; left: 35%; }
+.video-screen { width: 100%; height: 220px; background: #000; border: 2px inset var(--win-gray); display: flex; align-items: center; justify-content: center; color: #0f0; font-family: 'Courier New', monospace; overflow: hidden; position: relative; }
+
+#request-window { top: 15%; left: 40%; width: 350px; z-index: 210; }
+.req-container { font-family: 'Segoe UI', sans-serif; }
+.req-header { display: flex; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px; }
+.req-logo { width: 40px; margin-right: 10px; }
+.req-title { font-weight: bold; color: #000; font-size: 12px; }
+.req-form label { display: block; font-size: 11px; font-weight: bold; margin-top: 8px; }
+.req-form input, .req-form select { width: 100%; border: 1px solid #999; padding: 2px; font-size: 12px; margin-top: 2px; }
+
+/* ALERTAS DE SEGURIDAD */
+.security-alert { 
+    border-color: red !important; background-color: #000 !important; z-index: 9999 !important; 
+    box-shadow: 10px 10px 0 #800000 !important; animation: shake 0.5s infinite;
+}
+.security-alert .title-bar { background: red !important; color: white !important; }
+.security-alert .window-body { 
+    color: red; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; 
+    font-size: 20px; font-family: 'VT323', monospace; text-transform: uppercase;
+}
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* FINAL SCREEN */
+#final-sequence-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #000; color: #fff; z-index: 10000;
+    display: none; align-items: center; justify-content: center;
+    font-family: 'VT323', monospace; font-size: 2rem; padding: 40px; text-align: center;
+}
+#final-text { white-space: pre-wrap; }
+
+/* OTROS */
+#minesweeper-window { top: 30%; left: 30%; width: auto; }
+.minesweeper-frame { border: 2px inset #fff; padding: 4px; background: #c0c0c0; }
+.ms-header { display: flex; justify-content: space-between; border: 2px inset #fff; padding: 4px; margin-bottom: 5px; }
+.ms-counter { background: #000; color: #f00; font-family: 'VT323'; font-size: 22px; padding: 0 4px; }
+.ms-grid { display: grid; grid-template-columns: repeat(9, 20px); gap: 0; border: 3px inset #fff; }
+.cell { width: 20px; height: 20px; border: 2px outset #fff; font-size: 12px; font-weight: bold; text-align: center; line-height: 16px; cursor: default; }
+.cell:active, .cell.revealed { border: 1px solid #808080; background: #c0c0c0; padding-top: 1px; }
+.cell.mine { background: #f00; }
+
+#recycle-window { top: 40%; left: 40%; width: 300px; }
+.file-list-rows { width: 100%; background: #fff; border: 2px inset var(--win-gray); height: 150px; padding: 5px; }
+.file-row { display: flex; align-items: center; cursor: pointer; padding: 2px; font-size: 12px; }
+.file-row:hover { background: var(--win-blue); color: #fff; }
+
+#taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 30px; background: var(--win-gray); border-top: 2px outset #fff; display: flex; align-items: center; padding: 2px; z-index: 4000; }
+.start-btn { height: 24px; padding: 0 6px; display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 13px; background: var(--win-gray); border: 2px outset #fff; cursor: pointer; margin-right: 4px; }
+.start-btn:active, .start-btn.active { border: 2px inset #fff; }
+.task-list { flex-grow: 1; display: flex; gap: 2px; padding-left: 4px; border-left: 2px groove #fff; height: 100%; align-items: center; }
+.task-item { width: 120px; height: 22px; background: var(--win-gray); border: 2px outset #fff; font-size: 11px; display: flex; align-items: center; padding-left: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.task-item.active { border: 2px inset #fff; background: #e0e0e0; font-weight: bold; }
+.tray { margin-left: auto; border: 2px inset #fff; padding: 0 10px; font-size: 12px; height: 22px; display: flex; align-items: center; }
+
+#start-menu { position: absolute; bottom: 30px; left: 2px; width: 170px; background: var(--win-gray); border: 2px outset #fff; display: none; flex-direction: column; z-index: 4001; padding: 2px; box-shadow: 4px 4px 5px rgba(0,0,0,0.5); }
+.start-side { position: absolute; left: 2px; top: 2px; bottom: 2px; width: 22px; background: var(--win-blue); color: #fff; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; padding: 5px 0; font-weight: bold; }
+.menu-items { margin-left: 26px; }
+.menu-item { padding: 6px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.menu-item:hover { background: var(--win-blue); color: #fff; }
+.dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #000; }
+.dot.yellow { background: #ffcc00; } .dot.red { background: #cc0000; }
+
+@media (max-width: 600px) { 
+    #vao-chat-window { width: 90%; right: 5%; top: 55%; height: 40%; }
+    #vitalis-window { width: 90%; left: 5%; top: 5%; height: 45%; }
+    .window { width: 90%; }
+}

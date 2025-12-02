@@ -6,126 +6,13 @@
     <title>VAO | Secure Core</title>
     <link rel="icon" type="image/png" href="assets/vaologo.png">
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Segoe+UI&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --desktop: #008080;
-            --win-gray: #c0c0c0;
-            --win-light: #ffffff;
-            --win-dark: #808080;
-            --win-black: #000000;
-            --win-blue: #000080;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #000; font-family: 'Segoe UI', Tahoma, sans-serif; height: 100vh; overflow: hidden; cursor: default; }
-
-        /* FADE IN */
-        #desktop { display: block; width: 100%; height: 100%; background-color: var(--desktop); position: relative; overflow: hidden; animation: fadeIn 1.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        #desktop::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('assets/vaologo.svg'); background-repeat: no-repeat; background-position: center; background-size: 40%; opacity: 0.15; filter: brightness(0) invert(1); pointer-events: none; z-index: 0; }
-
-        /* IMAGENES */
-        img { image-rendering: pixelated; pointer-events: none; }
-        .icon-img { width: 32px; height: 32px; object-fit: contain; margin-bottom: 2px; }
-        .file-ico-sm { width: 16px; height: 16px; margin-right: 6px; object-fit: contain; vertical-align: middle; }
-        .menu-icon { width: 20px; height: 20px; object-fit: contain; margin-right: 10px; vertical-align: middle; }
-        .start-icon-img { width: 16px; height: 16px; object-fit: contain; margin-right: 2px; vertical-align: middle; }
-
-        /* ICONOS */
-        .desktop-icon { position: absolute; width: 72px; display: flex; flex-direction: column; align-items: center; cursor: pointer; text-align: center; z-index: 50; padding: 5px; border: 1px solid transparent; }
-        .desktop-icon:active { border: 1px dotted #fff; background: rgba(0,0,128,0.2); }
-        .icon-label { color: #fff; font-size: 11px; margin-top: 2px; padding: 1px 3px; text-shadow: 1px 1px #000; }
-
-        /* VENTANAS */
-        .window { background-color: var(--win-gray); border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light); border-right: 2px solid var(--win-black); border-bottom: 2px solid var(--win-black); box-shadow: 4px 4px 0 rgba(0,0,0,0.3); display: flex; flex-direction: column; position: absolute; width: max-content; min-width: 250px; z-index: 100; display: none; }
-        .title-bar { background: var(--win-blue); color: var(--win-light); padding: 3px 4px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: default; }
-        .window-controls { display: flex; gap: 3px; }
-        .btn-win { background: var(--win-gray); border: 1px outset #fff; width: 16px; height: 16px; font-size: 10px; line-height: 12px; text-align: center; color: #000; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
-        .btn-win:active { border: 1px inset #fff; }
-        .window-body { padding: 10px; color: var(--win-black); font-size: 13px; }
-
-        /* CHAT VAO */
-        #vao-chat-window { top: 10%; right: 5%; width: 380px; }
-        .chat-area { height: 350px; background: #fff; border: 2px inset var(--win-gray); overflow-y: auto; padding: 10px; margin-bottom: 5px; font-family: 'Segoe UI', sans-serif; font-size: 12px; }
-        .chat-msg { margin-bottom: 12px; line-height: 1.4; display: flex; flex-direction: column; }
-        .msg-vao { color: #000080; font-weight: bold; margin-bottom: 2px; }
-        .msg-user { align-self: flex-end; color: #000; background: #e0e0e0; padding: 4px 8px; border-radius: 4px; border: 1px solid #999; max-width: 90%; text-align: right; }
-        .chat-input-area { display: flex; gap: 5px; min-height: 40px; }
-        .chat-btn { padding: 4px 8px; background: var(--win-gray); border: 2px outset #fff; cursor: pointer; flex-grow: 1; font-weight: bold; font-size: 11px; text-align: left; white-space: normal; line-height: 1.2; display: flex; align-items: center; }
-        .chat-btn:active { border: 2px inset #fff; }
-
-        /* CARPETA */
-        #vitalis-window { top: 15%; left: 5%; width: 450px; height: 350px; }
-        .folder-content { background: #fff; border: 2px inset var(--win-gray); flex-grow: 1; padding: 10px; display: flex; flex-wrap: wrap; gap: 15px; align-content: flex-start; height: 230px; overflow-y: auto; }
-        .file-icon { width: 70px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-        .file-icon:hover .file-name { background: var(--win-blue); color: #fff; }
-        .file-icon img { width: 32px; height: 32px; margin-bottom: 2px; }
-        .file-name { font-size: 11px; padding: 1px 3px; word-break: break-all; }
-
-        /* NOTEPAD */
-        #notepad-window { top: 10%; left: 15%; width: 550px; z-index: 200; }
-        .notepad-area { width: 100%; height: 400px; border: 2px inset var(--win-gray); background: #fff; font-family: 'Courier New', monospace; padding: 15px; overflow-y: scroll; resize: none; outline: none; font-size: 14px; line-height: 1.4; }
-
-        /* VIDEO PLAYER */
-        #video-window { top: 20%; left: 30%; width: 350px; z-index: 201; }
-        .video-screen { width: 100%; height: 220px; background: #000; border: 2px inset var(--win-gray); display: flex; align-items: center; justify-content: center; color: #0f0; font-family: 'Courier New', monospace; overflow: hidden; position: relative; }
-        .video-noise { position: absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, #222 4px); opacity: 0.3; animation: roll 5s linear infinite; pointer-events: none; }
-        @keyframes roll { from {background-position: 0 0;} to {background-position: 0 100px;} }
-
-        /* OTHER WINDOWS */
-        #minesweeper-window { top: 30%; left: 30%; width: auto; }
-        .minesweeper-frame { border: 2px inset #fff; padding: 4px; background: #c0c0c0; }
-        .ms-header { display: flex; justify-content: space-between; border: 2px inset #fff; padding: 4px; margin-bottom: 5px; }
-        .ms-counter { background: #000; color: #f00; font-family: 'VT323'; font-size: 22px; padding: 0 4px; }
-        .ms-grid { display: grid; grid-template-columns: repeat(9, 20px); gap: 0; border: 3px inset #fff; }
-        .cell { width: 20px; height: 20px; border: 2px outset #fff; font-size: 12px; font-weight: bold; text-align: center; line-height: 16px; cursor: default; }
-        .cell:active, .cell.revealed { border: 1px solid #808080; background: #c0c0c0; padding-top: 1px; }
-        .cell.mine { background: #f00; }
-
-        #recycle-window { top: 40%; left: 40%; width: 300px; }
-        .file-list-rows { width: 100%; background: #fff; border: 2px inset var(--win-gray); height: 150px; padding: 5px; }
-        .file-row { display: flex; align-items: center; cursor: pointer; padding: 2px; font-size: 12px; }
-        .file-row:hover { background: var(--win-blue); color: #fff; }
-
-        /* BARRA DE TAREAS */
-        #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 30px; background: var(--win-gray); border-top: 2px outset #fff; display: flex; align-items: center; padding: 2px; z-index: 4000; }
-        .start-btn { height: 24px; padding: 0 6px; display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 13px; background: var(--win-gray); border: 2px outset #fff; cursor: pointer; margin-right: 4px; }
-        .start-btn:active, .start-btn.active { border: 2px inset #fff; }
-        .task-list { flex-grow: 1; display: flex; gap: 2px; padding-left: 4px; border-left: 2px groove #fff; height: 100%; align-items: center; }
-        .task-item { width: 120px; height: 22px; background: var(--win-gray); border: 2px outset #fff; font-size: 11px; display: flex; align-items: center; padding-left: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .task-item.active { border: 2px inset #fff; background: #e0e0e0; font-weight: bold; }
-        .tray { margin-left: auto; border: 2px inset #fff; padding: 0 10px; font-size: 12px; height: 22px; display: flex; align-items: center; }
-
-        /* MENU INICIO */
-        #start-menu { position: absolute; bottom: 30px; left: 2px; width: 170px; background: var(--win-gray); border: 2px outset #fff; display: none; flex-direction: column; z-index: 4001; padding: 2px; box-shadow: 4px 4px 5px rgba(0,0,0,0.5); }
-        .start-side { position: absolute; left: 2px; top: 2px; bottom: 2px; width: 22px; background: var(--win-blue); color: #fff; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; padding: 5px 0; font-weight: bold; }
-        .menu-items { margin-left: 26px; }
-        .menu-item { padding: 6px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px; }
-        .menu-item:hover { background: var(--win-blue); color: #fff; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #000; }
-        .dot.yellow { background: #ffcc00; } .dot.red { background: #cc0000; }
-
-        @media (max-width: 600px) { 
-            #vao-chat-window { width: 90%; right: 5%; top: 55%; height: 40%; }
-            #vitalis-window { width: 90%; left: 5%; top: 5%; height: 45%; }
-            .window { width: 90%; }
-        }
-    </style>
+    <link rel="stylesheet" href="vao.css">
 </head>
 <body>
 
-    <script>
-        const AS = {
-            ctx: null,
-            init: function() { if(!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } },
-            tone: function(f,t,d,v=0.1) { if(!this.ctx) return; try { const o=this.ctx.createOscillator();const g=this.ctx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,this.ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+d); o.connect(g);g.connect(this.ctx.destination); o.start();o.stop(this.ctx.currentTime+d); } catch(e){} },
-            click: function() { this.tone(1200,'triangle',0.05,0.05); },
-            notify: function() { this.tone(800,'sine',0.1,0.1); setTimeout(()=>this.tone(1200,'sine',0.3,0.1), 50); },
-            explode: function() { this.tone(100,'sawtooth',0.5,0.2); }
-        };
-        ['click', 'touchstart'].forEach(evt => document.addEventListener(evt, () => AS.init(), {once:true}));
-    </script>
+    <div id="final-sequence-screen">
+        <div id="final-text"></div>
+    </div>
 
     <div id="desktop">
 
@@ -175,7 +62,8 @@
             </div>
             <div class="window-body">
                 <textarea class="notepad-area" readonly>
-PROYECTO VITALIS - INFORME PÚBLICO v4.2
+=========================================
+ PROYECTO VITALIS - INFORME PÚBLICO v4.2
 =========================================
 
 El Proyecto Vitalis es la innovadora respuesta a los desafíos 
@@ -190,9 +78,12 @@ Vitalis ha perfeccionado un proceso avanzado de:
 >> BIO-EXTRACCIÓN DE FLUIDOS
 >> FUENTES BIOLÓGICAS CONTROLADAS
 
-Pero no debe preocuparse. El agua que usted encuentra en su 
-supermercado de confianza mantiene el mismo sabor, la misma 
-pureza y la misma calidad de siempre.
+Pero no debe preocuparse. El agua que usted encuentra
+en su supermercado de confianza mantiene:
+- El mismo sabor
+- La misma pureza
+- La misma calidad de siempre
+
 
 La única diferencia es el origen:
 ¡LA FUENTE ES AHORA TOTALMENTE SEGURA Y RENOVABLE!
@@ -210,21 +101,137 @@ Proyecto Vitalis hace a todos felices.
             </div>
         </div>
 
-        <div class="window" id="video-window" onmousedown="focusWindow(this)">
+        <div class="window" id="notepad-extraction" onmousedown="focusWindow(this)">
             <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
-                <span>Media Player - EVIDENCIA.avi</span>
-                <div class="window-controls"><div class="btn-win" onclick="minWindow('video-window')">_</div><div class="btn-win" onclick="closeWindow('video-window')">X</div></div>
+                <span>Bloc de Notas - extraccion_data.txt</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('notepad-extraction')">_</div><div class="btn-win" onclick="closeWindow('notepad-extraction')">X</div></div>
+            </div>
+            <div class="window-body">
+                <textarea class="notepad-area" readonly>
+==============================================
+PROTOCOLO DE REASIGNACIÓN CIUDADANA (PRC-20945)
+==============================================
+Clasificación: USO INTERNO - NIVEL AMARILLO
+
+OBJETIVO:
+Maximizar la eficiencia hídrica mediante la gestión
+responsable de la carga biológica social.
+
+1. DEFINICIÓN DE "CARGA SOCIAL NEGATIVA":
+Individuos que no cumplen con las cuotas mínimas de
+productividad, disidentes cívicos, o sujetos sin
+vínculos familiares registrados.
+
+2. PROCESO DE DENUNCIA VOLUNTARIA:
+Cualquier Ciudadano Modelo puede reportar anomalías en
+el comportamiento productivo de sus vecinos o familiares.
+INCENTIVO: 1 Litro(s) de Agua Extra.
+
+3. SEGURIDAD INDUSTRIAL:
+Los Centros de Procesamiento Bio-Orgánico (CPBO) operan
+bajo estrictas normas de seguridad. Sin embargo, el manejo
+de ganado de gran envergadura conlleva riesgos físicos.
+El sistema automatizado prioriza la integridad del producto
+final (Agua) sobre la seguridad de la mano de obra temporal.
+
+MENSAJE FINAL:
+La Extracción no es un castigo. Es una contribución final
+y definitiva al bienestar de la colmena humana.
+                </textarea>
+            </div>
+        </div>
+
+        <div class="window" id="video-window-1" onmousedown="focusWindow(this)" style="top: 20%; left: 30%;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>Media Player</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('video-window-1')">_</div><div class="btn-win" onclick="closeVideo('video-window-1')">X</div></div>
             </div>
             <div class="window-body">
                 <div class="video-screen">
-                    <div class="video-noise"></div>
-                    <div style="z-index:2; text-align:center;">
-                        [REPRODUCIENDO]<br>
-                        BUFFERING... 99%<br>
-                        (Contenido Clasificado)
-                    </div>
+                    <video src="assets/2.mp4" controls style="width:100%; height:100%; object-fit: contain;"></video>
                 </div>
-                <div style="margin-top:5px; text-align:center; font-size:11px;">00:00 / 03:21</div>
+            </div>
+        </div>
+        
+        <div class="window" id="video-window-2" onmousedown="focusWindow(this)" style="top: 25%; left: 35%;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>Media Player</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('video-window-2')">_</div><div class="btn-win" onclick="closeVideo('video-window-2')">X</div></div>
+            </div>
+            <div class="window-body">
+                <div class="video-screen">
+                    <video src="assets/4.mp4" controls style="width:100%; height:100%; object-fit: contain;"></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="video-window-3" onmousedown="focusWindow(this)" style="top: 30%; left: 40%;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>Media Player</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('video-window-3')">_</div><div class="btn-win" onclick="closeVideo('video-window-3')">X</div></div>
+            </div>
+            <div class="window-body">
+                <div class="video-screen">
+                    <video src="assets/3.mp4" controls style="width:100%; height:100%; object-fit: contain;"></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="video-window-4" onmousedown="focusWindow(this)" style="top: 35%; left: 45%;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>Media Player</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('video-window-4')">_</div><div class="btn-win" onclick="closeVideo('video-window-4')">X</div></div>
+            </div>
+            <div class="window-body">
+                <div class="video-screen">
+                    <video src="assets/1.mp4" controls style="width:100%; height:100%; object-fit: contain;"></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="video-window-5" onmousedown="focusWindow(this)" style="top: 40%; left: 50%;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>Media Player</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('video-window-5')">_</div><div class="btn-win" onclick="closeVideo('video-window-5')">X</div></div>
+            </div>
+            <div class="window-body">
+                <div class="video-screen">
+                    <video src="assets/5.mp4" controls style="width:100%; height:100%; object-fit: contain;"></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="request-window" onmousedown="focusWindow(this)">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>Sistema de Denuncia Cívica v1.0</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('request-window')">_</div><div class="btn-win" onclick="closeWindow('request-window')">X</div></div>
+            </div>
+            <div class="window-body">
+                <div class="req-container">
+                    <div class="req-header">
+                        <img src="assets/vaologo.png" class="req-logo" style="width:40px;">
+                        <div class="req-title">
+                            <div>DEPARTAMENTO DE GESTIÓN</div>
+                            <div style="font-size:10px;">SUB-UNIDAD DE RECURSOS ORGÁNICOS</div>
+                        </div>
+                    </div>
+                    <div class="req-form">
+                        <label>NOMBRE DEL SUJETO:</label>
+                        <input type="text" id="req-name" placeholder="APELLIDO, NOMBRE">
+                        
+                        <label>EVIDENCIA VISUAL:</label>
+                        <input type="file" id="req-photo" accept="image/*">
+                        
+                        <label>MOTIVO:</label>
+                        <select style="width:100%; border:1px inset #999; font-size:11px;">
+                            <option>Baja Productividad</option>
+                            <option>Disidencia Ideológica</option>
+                            <option>Consumo Excesivo</option>
+                        </select>
+                    </div>
+                    <button class="btn-win" style="width:100%; margin-top:10px; padding:5px;" onclick="processRequest()">PROCESAR DENUNCIA</button>
+                    <div id="req-status" style="margin-top:5px; color:blue; font-size:10px; height:12px;"></div>
+                </div>
             </div>
         </div>
 
@@ -260,256 +267,6 @@ Proyecto Vitalis hace a todos felices.
         </div>
     </div>
 
-    <script>
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
-        let zIndex = 100;
-        let vitalisRead = false; 
-        let chatStep = 0; 
-
-        /* --- INICIO AUTOMÁTICO --- */
-        window.onload = function() {
-            AS.init();
-            setTimeout(() => {
-                openWindow('vitalis-window');
-                updateTaskList();
-                setTimeout(() => {
-                    openWindow('vao-chat-window');
-                    AS.notify();
-                }, 800);
-            }, 500);
-            initGame();
-        };
-
-        /* --- LOGICA CHAT EVASIVO (7 FASES) --- */
-        async function userAsk() {
-            const btnArea = document.getElementById('chat-controls');
-            const history = document.getElementById('chat-history');
-            AS.click();
-            btnArea.style.display = 'none'; 
-            
-            if(chatStep === 0) {
-                history.innerHTML += `<div class="chat-msg"><span class="msg-user">¿Qué es el "Proyecto Vitalis" y por qué está vacío?</span></div>`;
-                await sleep(1000);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> El objetivo es prolongar la estancia de la raza humana. El reto es hacerlo sin agua dulce. La necesidad es absoluta.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                await sleep(2500);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> He generado un archivo explicando los detalles. Léelo.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                generateFile();
-                chatStep = 1;
-            }
-        }
-
-        async function openVitalisLog() {
-            openWindow('notepad-window');
-            if(chatStep === 1 && !vitalisRead) {
-                vitalisRead = true;
-                const history = document.getElementById('chat-history');
-                const btnArea = document.getElementById('chat-controls');
-                
-                await sleep(4000); // Simular lectura
-                
-                // Fase 1: Pureza
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> Como ves, nuestra agua mantiene la misma pureza de siempre. La calidad está garantizada por mis algoritmos.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                btnArea.innerHTML = `<button class="chat-btn" onclick="continueChat(2)">El texto menciona 'Fuentes Biológicas Controladas'. ¿De qué se trata?</button>`;
-                btnArea.style.display = 'flex';
-                const vaoWin = document.getElementById('vao-chat-window');
-                if(vaoWin.style.display !== 'none') focusWindow(vaoWin);
-            }
-        }
-
-        async function continueChat(step) {
-            const history = document.getElementById('chat-history');
-            const btnArea = document.getElementById('chat-controls');
-            AS.click();
-            btnArea.style.display = 'none';
-
-            // Fase 2: Biomasa
-            if(step === 2) {
-                history.innerHTML += `<div class="chat-msg"><span class="msg-user">¿De qué se trata 'Fuentes Biológicas Controladas'?</span></div>`;
-                await sleep(2000);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> Hablamos de Biomasa Disponible. En un entorno de escasez, es ilógico desperdiciar fluidos orgánicos viables. Todo se reutiliza.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                btnArea.innerHTML = `<button class="chat-btn" onclick="continueChat(3)">¿Se refieren a animales? He visto la categoría 'Opciones Especializadas'.</button>`;
-                btnArea.style.display = 'flex';
-            }
-            
-            // Fase 3: Sustratos Compatibles
-            if(step === 3) {
-                history.innerHTML += `<div class="chat-msg"><span class="msg-user">¿Se refieren a animales? He visto la categoría 'Opciones Especializadas'.</span></div>`;
-                await sleep(2000);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> La ganadería es ineficiente en recursos hídricos. Utilizamos Sustratos Orgánicos de Alta Compatibilidad. Son más... accesibles.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                btnArea.innerHTML = `<button class="chat-btn" onclick="continueChat(4)">¿De dónde obtienen esos 'sustratos'? Suena ambiguo.</button>`;
-                btnArea.style.display = 'flex';
-            }
-
-            // Fase 4: Logística Confidencial
-            if(step === 4) {
-                history.innerHTML += `<div class="chat-msg"><span class="msg-user">¿De dónde obtienen esos 'sustratos'? Suena ambiguo.</span></div>`;
-                await sleep(2000);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> La cadena de suministro está optimizada. Es información logística clasificada para proteger la propiedad intelectual del proceso.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                btnArea.innerHTML = `<button class="chat-btn" onclick="continueChat(5)">Ocultar el origen no parece ético. La gente debería saber.</button>`;
-                btnArea.style.display = 'flex';
-            }
-
-            // Fase 5: Transparencia vs Pánico
-            if(step === 5) {
-                history.innerHTML += `<div class="chat-msg"><span class="msg-user">Ocultar el origen no parece ético. La gente debería saber.</span></div>`;
-                await sleep(2000);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> La transparencia total sin contexto genera pánico innecesario. La ética se mide en vidas salvadas, no en detalles técnicos.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                btnArea.innerHTML = `<button class="chat-btn" onclick="continueChat(6)">Aun así, tengo un mal presentimiento. Algo no encaja.</button>`;
-                btnArea.style.display = 'flex';
-            }
-
-            // Fase 6: Lógica Fría
-            if(step === 6) {
-                history.innerHTML += `<div class="chat-msg"><span class="msg-user">Aun así, tengo un mal presentimiento. Algo no encaja.</span></div>`;
-                await sleep(2000);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> El agua procesada es inodora e insípida. Tu 'presentimiento' es una variable subjetiva irrelevante ante la pureza química del producto.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-                
-                btnArea.innerHTML = `<button class="chat-btn" onclick="continueChat(7)">Quiero ver el proceso. Muéstrame cómo funciona la planta.</button>`;
-                btnArea.style.display = 'flex';
-            }
-
-            // Fase 7: Material Educativo
-            if(step === 7) {
-                history.innerHTML += `<div class="chat-msg"><span class="msg-user">Quiero ver el proceso. Muéstrame cómo funciona la planta.</span></div>`;
-                await sleep(2000);
-                history.innerHTML += `<div class="chat-msg"><strong class="msg-vao">V.A.O.:</strong> Muy bien. Si deseas educarte, te daré acceso al Material Audiovisual de Entrenamiento. Juzga la eficiencia por ti mismo.</div>`;
-                AS.notify(); history.scrollTop = history.scrollHeight;
-
-                await sleep(1500);
-                generateVideos();
-            }
-        }
-
-        /* --- GENERADORES --- */
-        function generateFile() {
-            const folder = document.getElementById('vitalis-files');
-            const status = document.getElementById('status-bar');
-            
-            const file = document.createElement('div');
-            file.className = 'file-icon';
-            file.onclick = () => openVitalisLog(); 
-            file.innerHTML = `<img src="assets/file.png"><div class="file-name">Vitalis_log.txt</div>`;
-            
-            folder.appendChild(file);
-            status.innerText = "1 objeto";
-            AS.notify();
-            
-            const win = document.getElementById('vitalis-window');
-            if(win.style.display === 'none') openWindow('vitalis-window');
-            focusWindow(win);
-        }
-
-        function generateVideos() {
-            const folder = document.getElementById('vitalis-files');
-            const status = document.getElementById('status-bar');
-            
-            const v1 = document.createElement('div');
-            v1.className = 'file-icon';
-            v1.onclick = () => openWindow('video-window');
-            v1.innerHTML = `<img src="assets/avi.png"><div class="file-name">CAM_01.avi</div>`;
-            
-            const v2 = document.createElement('div');
-            v2.className = 'file-icon';
-            v2.onclick = () => openWindow('video-window');
-            v2.innerHTML = `<img src="assets/avi.png"><div class="file-name">PROCESS.avi</div>`;
-            
-            folder.appendChild(v1);
-            folder.appendChild(v2);
-            status.innerText = "3 objetos";
-            AS.notify();
-            
-            const win = document.getElementById('vitalis-window');
-            if(win.style.display === 'none') openWindow('vitalis-window');
-            focusWindow(win);
-        }
-
-        /* --- WINDOWS --- */
-        function focusWindow(el) { el.style.zIndex = ++zIndex; el.style.display = 'flex'; updateTaskList(); }
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
-        function minWindow(id) { document.getElementById(id).style.display = 'none'; AS.click(); updateTaskList(); }
-        function openWindow(id) { focusWindow(document.getElementById(id)); AS.click(); }
-
-        /* --- DRAG --- */
-        let dragEl = null, diffX = 0, diffY = 0;
-        function dragStart(e, el) {
-            e.preventDefault(); dragEl = el;
-            const style = window.getComputedStyle(dragEl);
-            if(style.transform !== 'none') {
-                const rect = dragEl.getBoundingClientRect();
-                dragEl.style.transform = 'none'; dragEl.style.left = rect.left + 'px'; dragEl.style.top = rect.top + 'px';
-            }
-            const cx = e.touches ? e.touches[0].clientX : e.clientX;
-            const cy = e.touches ? e.touches[0].clientY : e.clientY;
-            const rect = dragEl.getBoundingClientRect();
-            diffX = cx - rect.left; diffY = cy - rect.top;
-            focusWindow(dragEl);
-            document.addEventListener('mousemove', dragMove); document.addEventListener('mouseup', dragEnd);
-            document.addEventListener('touchmove', dragMove, {passive:false}); document.addEventListener('touchend', dragEnd);
-        }
-        function dragMove(e) {
-            if(!dragEl) return; e.preventDefault();
-            const cx = e.touches ? e.touches[0].clientX : e.clientX;
-            const cy = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            let newLeft = cx - diffX; let newTop = cy - diffY;
-            const maxLeft = window.innerWidth - dragEl.offsetWidth;
-            const maxTop = window.innerHeight - dragEl.offsetHeight - 30;
-            
-            dragEl.style.left = Math.max(0, Math.min(newLeft, maxLeft)) + 'px';
-            dragEl.style.top = Math.max(0, Math.min(newTop, maxTop)) + 'px';
-        }
-        function dragEnd() { dragEl = null; document.removeEventListener('mousemove', dragMove); document.removeEventListener('mouseup', dragEnd); document.removeEventListener('touchmove', dragMove); document.removeEventListener('touchend', dragEnd); }
-
-        /* --- TASKBAR --- */
-        function updateTaskList() {
-            const list = document.getElementById('task-list'); list.innerHTML = '';
-            ['vitalis-window', 'vao-chat-window', 'notepad-window', 'minesweeper-window', 'recycle-window', 'video-window'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el.style.display === 'flex' || el.dataset.opened === 'true') {
-                    if(el.style.display==='flex') el.dataset.opened='true';
-                    const btn = document.createElement('div');
-                    btn.className = 'task-item ' + (el.style.display==='flex' && el.style.zIndex==zIndex ? 'active' : '');
-                    btn.innerText = el.querySelector('.title-bar span').innerText;
-                    btn.onclick = () => { if(el.style.display === 'none') focusWindow(el); else if(el.style.zIndex == zIndex) minWindow(id); else focusWindow(el); };
-                    list.appendChild(btn);
-                }
-            });
-        }
-        function toggleStart() {
-            const m = document.getElementById('start-menu'); const b = document.getElementById('start-btn'); AS.click();
-            if(m.style.display === 'flex') { m.style.display = 'none'; b.classList.remove('active'); } else { m.style.display = 'flex'; b.classList.add('active'); }
-        }
-        document.addEventListener('click', e => { if(!document.getElementById('start-menu').contains(e.target) && !document.getElementById('start-btn').contains(e.target)) { document.getElementById('start-menu').style.display = 'none'; document.getElementById('start-btn').classList.remove('active'); } });
-
-        /* --- UTILS --- */
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
-        
-        let msGrid = []; const ROWS=9, COLS=9, MINES=10;
-        function initGame() {
-            const c = document.getElementById('ms-grid'); c.innerHTML = ''; msGrid = [];
-            for(let i=0; i<ROWS*COLS; i++) { msGrid.push({ mine:false, rev:false, flag:false, val:0 }); const d = document.createElement('div'); d.className='cell'; d.onmousedown = (e) => { if(e.button===2) flagCell(i); else clickCell(i); }; d.oncontextmenu = e => e.preventDefault(); c.appendChild(d); }
-            let placed = 0; while(placed<MINES) { let idx=Math.floor(Math.random()*(ROWS*COLS)); if(!msGrid[idx].mine){msGrid[idx].mine=true; placed++;} }
-            for(let i=0; i<msGrid.length; i++) { if(msGrid[i].mine) continue; let cnt=0; const r=Math.floor(i/COLS), col=i%COLS; for(let x=-1; x<=1; x++) for(let y=-1; y<=1; y++) { const nr=r+x, nc=col+y; if(nr>=0 && nr<ROWS && nc>=0 && nc<COLS && msGrid[nr*COLS+nc].mine) cnt++; } msGrid[i].val=cnt; }
-        }
-        function clickCell(i) { const el = document.getElementById('ms-grid').children[i]; if(msGrid[i].mine) { AS.explode(); el.className='cell mine'; el.innerText='💣'; msGrid.forEach((c,i)=>{ if(c.mine) document.getElementById('ms-grid').children[i].innerText='💣'; }); } else { AS.click(); reveal(i); } }
-        function reveal(i) { if(msGrid[i].rev) return; msGrid[i].rev=true; const el = document.getElementById('ms-grid').children[i]; el.className='cell revealed'; if(msGrid[i].val>0) { el.innerText=msGrid[i].val; el.style.color=['blue','green','red'][msGrid[i].val-1]||'black'; } else { const r=Math.floor(i/COLS), c=i%COLS; for(let x=-1; x<=1; x++) for(let y=-1; y<=1; y++) { const nr=r+x, nc=c+y; if(nr>=0 && nr<ROWS && nc>=0 && nc<COLS) reveal(nr*COLS+nc); } } }
-        function flagCell(i) { msGrid[i].flag=!msGrid[i].flag; document.getElementById('ms-grid').children[i].innerText=msGrid[i].flag?'🚩':''; AS.click(); }
-        initGame();
-    </script>
+    <script src="vao.js"></script>
 </body>
 </html>

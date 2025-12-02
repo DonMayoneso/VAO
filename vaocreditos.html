@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA APAGADO | CRÉDITOS</title>
+    <link rel="icon" type="image/png" href="assets/vaologo.png">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #00ff00; /* Verde Terminal */
+            font-family: 'VT323', monospace;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        #terminal {
+            width: 80%;
+            max-width: 800px;
+            font-size: 1.5rem;
+            line-height: 1.5;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .line {
+            display: block;
+            margin-bottom: 15px;
+            opacity: 0; /* Oculto hasta que se escriba */
+        }
+
+        .highlight {
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
+        }
+
+        .blink-cursor::after {
+            content: '█';
+            animation: blink 0.8s infinite;
+            margin-left: 5px;
+        }
+
+        #reboot-btn {
+            margin-top: 50px;
+            background: transparent;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 15px 30px;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0; /* Oculto al inicio */
+            transition: all 0.3s;
+            text-shadow: 0 0 5px #00ff00;
+            box-shadow: 0 0 5px #00ff00;
+        }
+
+        #reboot-btn:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        /* Scanlines para efecto CRT */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal"></div>
+    <button id="reboot-btn" onclick="window.location.href='index.html'">> REINICIAR SISTEMA_</button>
+
+    <script>
+        // Configuración de audio simple (Beep)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+        
+        function beep() {
+            if(ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.value = 800 + Math.random() * 200; // Variación ligera
+            gain.gain.value = 0.05;
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.05);
+        }
+
+        // El guion de los créditos
+        const script = [
+            { text: "FIN DE LA SESIÓN...", delay: 50 },
+            { text: "CARGANDO DATOS DE DESARROLLO...", delay: 30 },
+            { text: "--------------------------------", delay: 10 },
+            { text: "DISEÑO Y DESAROLLO:", delay: 50, highlight: true },
+            { text: "> JAVIER TRONCOSO", delay: 50 },
+            { text: "> PABLO ALVARADO", delay: 50 },
+            { text: " ", delay: 0 },
+            { text: "TIEMPO DE COMPILACIÓN:", delay: 50, highlight: true },
+            { text: "> 48 HORAS [SPEEDRUN] ;)", delay: 80 },
+            { text: "--------------------------------", delay: 10 },
+            { text: "INFORME FINAL:", delay: 40 },
+            { text: "La realidad es fragmentada.", delay: 60 },
+            { text: "¿Elegiste la pastilla IODINE o la AQUA?", delay: 60 },
+            { text: "Solo has visto una cara de la moneda.", delay: 60 },
+            { text: "Reinicia. Elige la otra pastilla.", delay: 80 },
+            { text: "Descubre la verdad completa.", delay: 80 }
+        ];
+
+        const terminal = document.getElementById('terminal');
+        const btn = document.getElementById('reboot-btn');
+
+        async function typeLine(lineData) {
+            const p = document.createElement('div');
+            p.className = 'line blink-cursor';
+            if (lineData.highlight) p.className += ' highlight';
+            p.style.opacity = 1;
+            terminal.appendChild(p);
+
+            const text = lineData.text;
+            
+            for (let i = 0; i < text.length; i++) {
+                p.textContent += text[i];
+                if(text[i] !== ' ') beep(); // Sonido al escribir
+                await new Promise(r => setTimeout(r, lineData.delay));
+            }
+
+            // Quitar el cursor parpadeante de la línea terminada (opcional, lo dejo para efecto retro)
+            p.classList.remove('blink-cursor');
+        }
+
+        async function runCredits() {
+            // Pequeña pausa inicial
+            await new Promise(r => setTimeout(r, 1000));
+
+            for (const line of script) {
+                await typeLine(line);
+                await new Promise(r => setTimeout(r, 300)); // Pausa entre líneas
+            }
+
+            // Mostrar botón
+            await new Promise(r => setTimeout(r, 1000));
+            btn.style.opacity = 1;
+        }
+
+        // Iniciar al hacer click en cualquier lado (para activar audio) o automáticamente
+        document.body.addEventListener('click', () => {
+            if(ctx.state === 'suspended') ctx.resume();
+        });
+
+        runCredits();
+    </script>
+</body>
+</html>
