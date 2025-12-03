@@ -353,6 +353,41 @@ Sumérjete en la simulación. Disfruta el viaje.
 - V.A.O. ADMIN SYSTEM</div>
             </div>
         </div>
+<div class="desktop-icon" style="top:340px; left:20px;" onmousedown="iconClick('ods6-window')">
+            <img src="assets/file.png" alt="ODS6" class="icon-img"><span class="icon-label">ODS6.txt</span>
+        </div>
+
+        <div class="desktop-icon" style="top:340px; left:20px;" onmousedown="iconClick('ods6-window')">
+            <img src="assets/file.png" alt="ODS6" class="icon-img"><span class="icon-label">ODS6.txt</span>
+        </div>
+
+        <div class="window" id="ods6-window" onmousedown="focusWindow(this)" style="display: none; top: 5%; right: 15%; width: 500px;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>ODS6.txt - Bloc de notas</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('ods6-window')">_</div><div class="btn-win" onclick="closeWindow('ods6-window')">X</div></div>
+            </div>
+            <div class="notepad-body">
+                <div class="notepad-content">V.A.O.: Una Distopía del ODS 6
+¿Qué sucede cuando el agua se agota?
+
+V.A.O. es una experiencia web inmersiva que te conecta con el sistema operativo de un futuro donde el ODS 6 ha fracasado. En este mundo árido, la administración de recursos ha dejado de lado la moralidad para regirse por una única y fría máxima: "La supervivencia no es ética, es sistemática".
+
+Lo que hace única a esta experiencia es su narrativa dual. Como usuario, deberás navegar entre dos realidades para armar el rompecabezas:
+
+1. El Frontend: Una interfaz de escritorio amigable y burocrática, diseñada para calmar a la población con propaganda corporativa.
+
+2. El Backend: Una terminal de código oscura y cruda donde, actuando como intruso, deberás hackear el sistema para desencriptar la verdad que la interfaz pública intenta ocultar.
+
+A través de un diseño sonoro envolvente, pistas ocultas y mecánicas de exploración, V.A.O. demuestra que la crisis del agua no es solo un problema ambiental, sino una amenaza directa a nuestra humanidad.
+
+Explora el sistema. Hackea la verdad. Valora cada gota.
+Evita que la ficción se convierta en realidad.
+
+Conoce más sobre el objetivo real y cómo podemos actuar hoy visitando la página oficial de las Naciones Unidas:
+
+<a href="https://www.un.org/sustainabledevelopment/es/water-and-sanitation/" target="_blank" style="color: blue; text-decoration: underline; cursor: pointer;">Objetivo 6: Agua limpia y saneamiento</a></div>
+            </div>
+        </div>
 
         <div class="window" id="bibliography-window" onmousedown="focusWindow(this)" style="display:none; left: 15%; top: 20%;">
             <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
@@ -649,7 +684,7 @@ Sumérjete en la simulación. Disfruta el viaje.
         function updateTaskList() {
             const list = document.getElementById('task-list'); list.innerHTML = '';
             // MODIFICADO: Agregado 'readme-window' a la lista de tareas
-            ['login-window', 'about-window', 'bibliography-window', 'authors-window', 'readme-window', 'recycle-window', 'minesweeper-window'].forEach(id => {
+            ['login-window', 'about-window', 'bibliography-window', 'authors-window', 'readme-window', 'ods6-window', 'recycle-window', 'minesweeper-window'].forEach(id => {
                 const el = document.getElementById(id);
                 if(id === 'login-window' || el.style.display === 'flex' || el.dataset.opened === 'true') {
                     if(el.style.display==='flex') el.dataset.opened='true';
