@@ -7,37 +7,53 @@
     <link rel="icon" type="image/png" href="assets/vaologo.png">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
+        * { box-sizing: border-box; }
+        
         body {
             background-color: #000;
             color: #00ff00;
             font-family: 'VT323', monospace;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-y: auto; 
             text-transform: uppercase;
+            padding: 20px;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            width: 100%;
         }
 
         #terminal {
-            width: 80%;
+            width: 90%;
             max-width: 800px;
             font-size: 1.5rem;
             line-height: 1.5;
             text-shadow: 0 0 5px #00ff00;
+            margin-bottom: 30px;
         }
 
         .line {
             display: block;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             opacity: 0;
         }
 
         .highlight {
             color: #fff;
             text-shadow: 0 0 10px #fff;
+            margin-top: 15px;
+            border-bottom: 1px dashed #004400;
+            display: inline-block;
         }
 
         .blink-cursor::after {
@@ -47,7 +63,6 @@
         }
 
         #reboot-btn {
-            margin-top: 50px;
             background: transparent;
             color: #00ff00;
             border: 2px solid #00ff00;
@@ -55,10 +70,11 @@
             font-family: 'VT323', monospace;
             font-size: 1.5rem;
             cursor: pointer;
-            opacity: 0; /* Oculto al inicio */
+            opacity: 0;
             transition: all 0.3s;
             text-shadow: 0 0 5px #00ff00;
             box-shadow: 0 0 5px #00ff00;
+            margin-bottom: 40px;
         }
 
         #reboot-btn:hover {
@@ -69,11 +85,11 @@
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         
-        /* Scanlines para efecto CRT */
+        /* Scanlines */
         body::before {
             content: " ";
             display: block;
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 2;
@@ -84,11 +100,15 @@
 </head>
 <body>
 
-    <div id="terminal"></div>
-    <button id="reboot-btn" onclick="window.location.href='index.html'">> REINICIAR SISTEMA_</button>
+    <audio id="bgm" src="assets/daisybell.mp3" loop></audio>
+
+    <div class="content-wrapper">
+        <div id="terminal"></div>
+        <button id="reboot-btn" onclick="window.location.href='index.html'">> REINICIAR SISTEMA_</button>
+    </div>
 
     <script>
-        // Configuración de audio simple
+        // SFX DE TECLADO
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioContext();
         
@@ -96,30 +116,74 @@
             if(ctx.state === 'suspended') ctx.resume();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
-            osc.type = 'square';
-            osc.frequency.value = 800 + Math.random() * 200;
-            gain.gain.value = 0.05;
+            osc.type = 'square'; 
+            osc.frequency.value = 800 + Math.random() * 200; 
+            gain.gain.value = 0.03; 
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.start();
-            osc.stop(ctx.currentTime + 0.05);
+            osc.stop(ctx.currentTime + 0.03); 
         }
 
-        // Créditos
+        // MÚSICA DE FONDO Y FADE OUT
+        const music = document.getElementById('bgm');
+        const MAX_VOL = 0.3;
+        const FADE_START = 2;
+        
+        music.volume = MAX_VOL;
+
+        music.addEventListener('timeupdate', () => {
+            if (!music.duration) return;
+            const timeLeft = music.duration - music.currentTime;
+            if (timeLeft <= FADE_START) {
+                let factor = timeLeft / FADE_START;
+                if (factor < 0) factor = 0;
+                music.volume = MAX_VOL * factor;
+            } else {
+                if (music.volume !== MAX_VOL) music.volume = MAX_VOL;
+            }
+        });
+
+        window.addEventListener('load', () => {
+            const playPromise = music.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => console.log("Esperando interacción..."));
+            }
+        });
+
+        document.body.addEventListener('click', () => {
+            if(ctx.state === 'suspended') ctx.resume();
+            if(music.paused) music.play();
+        }, { once: true });
+
+
+        // GUIÓN
         const script = [
             { text: "FIN DE LA SESIÓN...", delay: 50 },
-            { text: "CARGANDO DATOS DE DESARROLLO...", delay: 30 },
-            { text: "--------------------------------", delay: 10 },
+            { text: "CERRANDO PUERTOS...", delay: 20 },
+            
+            // BLOQUE 1: HUMANO
             { text: "DISEÑO Y DESAROLLO:", delay: 50, highlight: true },
             { text: "> JAVIER TRONCOSO", delay: 50 },
             { text: "> PABLO ALVARADO", delay: 50 },
-            { text: " ", delay: 0 },
-            { text: "TIEMPO DE COMPILACIÓN:", delay: 50, highlight: true },
-            { text: "> 48 HORAS [SPEEDRUN] ;)", delay: 80 },
-            { text: "--------------------------------", delay: 10 },
+            
+            // BLOQUE 2: TÉCNICO
+            { text: "ESPECIFICACIONES DEL NÚCLEO:", delay: 50, highlight: true },
+            { text: "> STACK: HTML5 / CSS3 / ES6+", delay: 40 },
+            { text: "> COMPILACIÓN: 48 HORAS [SPEEDRUN] ;)", delay: 40},
+            
+            // BLOQUE 3: SOCIAL
+            { text: "LOGS DE AGRADECIMIENTO:", delay: 50, highlight: true },
+            { text: "> Gracias a todos los que nos apoyan.", delay: 50 },
+            { text: "...................................", delay: 20 },
+            { text: "> ...y en especial a los que no.", delay: 150 },
+            
+            // BLOQUE 4: NARRATIVO
+            { text: "--------------------------------", delay: 10, highlight: true },
             { text: "INFORME FINAL:", delay: 40 },
             { text: "La realidad es fragmentada.", delay: 60 },
             { text: "¿Elegiste la pastilla IODINE o la AQUA?", delay: 60 },
+            { text: "¿Saltaste directamente hasta aquí?", delay: 60 },
             { text: "Solo has visto una cara de la moneda.", delay: 60 },
             { text: "Reinicia. Elige la otra pastilla.", delay: 80 },
             { text: "Descubre la verdad completa.", delay: 80 }
@@ -139,14 +203,14 @@
             
             for (let i = 0; i < text.length; i++) {
                 p.textContent += text[i];
-                if(text[i] !== ' ') beep();
+                if(text[i] !== ' ') beep(); 
                 await new Promise(r => setTimeout(r, lineData.delay));
             }
             p.classList.remove('blink-cursor');
+            window.scrollTo(0, document.body.scrollHeight);
         }
 
         async function runCredits() {
-            // Pequeña pausa inicial
             await new Promise(r => setTimeout(r, 1000));
 
             for (const line of script) {
@@ -154,15 +218,10 @@
                 await new Promise(r => setTimeout(r, 300));
             }
 
-            // Mostrar botón
             await new Promise(r => setTimeout(r, 1000));
             btn.style.opacity = 1;
+            btn.scrollIntoView({ behavior: 'smooth' });
         }
-
-        // Iniciar al hacer click en cualquier lado
-        document.body.addEventListener('click', () => {
-            if(ctx.state === 'suspended') ctx.resume();
-        });
 
         runCredits();
     </script>

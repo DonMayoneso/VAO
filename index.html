@@ -141,7 +141,7 @@
         #hacker-window .window-body { background: #000; color: #0f0; font-family: 'Courier New', monospace; }
 
         /* ARCHIVOS */
-        #about-window, #recycle-window, #bibliography-window, #authors-window { display: none; z-index: 101; }
+        #about-window, #recycle-window, #bibliography-window, #authors-window, #readme-window { display: none; z-index: 101; }
         #about-window, #recycle-window, #bibliography-window { top: 15%; left: 10%; width: 280px; }
         
         .file-list { width: 100%; background: #fff; border: 2px inset var(--win-gray); height: 120px; padding: 5px; overflow-y: auto; }
@@ -193,7 +193,7 @@
             #vao-chat-window { left: 5%; }
             #hacker-window { right: 5%; }
             #ascii-logo-container { font-size: 4px; line-height: 4px; }
-            #authors-window { width: 90%; left: 5%; }
+            #authors-window, #readme-window { width: 90%; left: 5%; }
         }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
@@ -236,6 +236,10 @@
         </div>
         <div class="desktop-icon" style="top:180px; left:20px;" onmousedown="iconClick('minesweeper-window')">
             <img src="assets/minesweeper.png" alt="Minas" class="icon-img"><span class="icon-label">Minas</span>
+        </div>
+        
+        <div class="desktop-icon" style="top:260px; left:20px;" onmousedown="iconClick('readme-window')">
+            <img src="assets/file.png" alt="Leeme" class="icon-img"><span class="icon-label">LEEME.TXT</span>
         </div>
 
         <div class="window" id="login-window" onmousedown="focusWindow(this)">
@@ -302,9 +306,51 @@
                 <div class="window-controls"><div class="btn-win" onclick="minWindow('authors-window')">_</div><div class="btn-win" onclick="closeWindow('authors-window')">X</div></div>
             </div>
             <div class="notepad-body">
-                <div class="notepad-content">Desarrollado y diseñado por Javier Troncoso y Pablo Alvarado.
+                <div class="notepad-content">Desarrollado y diseñado por:
+                    
+Javier Troncoso y 
+⣴⣾⣿⣿⣿⣿⣷⣦ 
+⣿⣿⣿⣿⣿⣿⣿⣿           
+⡟⠛⠽⣿⣿⠯⠛⢻            
+⣧⣀⣀⡾⢷⣀⣀⣼           
+ ⡏⢽⢴⡦⡯⢹                
+ ⠙⢮⣙⣋⡵⠋               
+    ⠉⠉
+
+Pablo Alvarado.
+  ／|、
+（ﾟ､ ｡ 7
+  |､  ~ヽ
+  じしf_,)ノ
 
 Desarrollado en 48h.</div>
+            </div>
+        </div>
+
+        <div class="window" id="readme-window" onmousedown="focusWindow(this)" style="top: 15%; right: 15%; width: 400px;">
+            <div class="title-bar" onmousedown="dragStart(event, this.parentElement)">
+                <span>LÉEME.txt - Bloc de notas</span>
+                <div class="window-controls"><div class="btn-win" onclick="minWindow('readme-window')">_</div><div class="btn-win" onclick="closeWindow('readme-window')">X</div></div>
+            </div>
+            <div class="notepad-body">
+                <div class="notepad-content">> BIENVENIDO A VAO WORKSTATION
+------------------------------
+> INTERACTIVIDAD TOTAL
+Este sistema es interactivo y arrastrable.
+Puedes mover cualquier ventana sujetándola desde la barra superior. Organiza tu espacio de trabajo como desees.
+------------------------------
+> EXPERIENCIA NARRATIVA
+Esto no es solo una página web. Es una experiencia audiovisual inmersiva.
+Para entender la historia completa, debes LEER, ESCUCHAR y EXPLORAR.
+------------------------------
+> La curiosidad es tu llave.
+1. Has clic en los iconos.
+2. Abre carpetas y archivos.
+3. Busca pistas en los diálogos.
+------------------------------
+Sumérjete en la simulación. Disfruta el viaje.
+------------------------------
+- V.A.O. ADMIN SYSTEM</div>
             </div>
         </div>
 
@@ -321,8 +367,11 @@ Desarrollado en 48h.</div>
                     <a href="assets/CadaverExquisito.pdf" download class="file-item">
                         <img src="assets/file.png" class="file-ico-sm">CadaverExquisito.pdf
                     </a>
-                    <a href="assets/SimulacroSimulation.pdf" download class="file-item">
-                        <img src="assets/file.png" class="file-ico-sm">SimulacroSimulation.pdf
+                    <a href="assets/SimulacroSimulacion.pdf" download class="file-item">
+                        <img src="assets/file.png" class="file-ico-sm">SimulacroSimulacion.pdf
+                    </a>
+                    <a href="assets/NoTengoBocaYDeboGritar.pdf" download class="file-item">
+                        <img src="assets/file.png" class="file-ico-sm">CadaverExquisito.pdf
                     </a>
                 </div>
             </div>
@@ -396,42 +445,46 @@ Desarrollado en 48h.</div>
         }
 
         const asciiLogo = `
-                              ##########                     
-                            ############                     
-                           ##############                    
-                           ################                   
-                          ##################                  
-                         ####################                 
-                         #########  #########                 
-                        #########%  ##########                
-                       ##########    ##########               
-                      ##########################              
-                      ###########################             
-                     ############################             
-                    ##############################            
-                   ##########            ##########           
-                  ##########              ##########          
-                  ##########       ##       ##########        
-                 ###########  ############  ###########       
-                 ########################### ##########       
-                #################      #################      
-               ################    ##    ##### ##########     
-              ################   ## ###  #################    
-             ########### #####   ##  ##  ###### ##########    
-             ########### ######   ####   #####  ###########   
-              ########## ######       ####### ##########      
-               ############################ ###########       
-                ########### ############## ###########        
-                  ##########     ####     ##########          
-                   ###########          ###########           
-                    ###########        ###########            
-                     ###########      ##########              
-                       ###########   ##########               
-                        ########### ##########                
-                         ####################                 
-                           ################                   
-                            ##############                    
-                             ############                     
+                                 %%%                             
+                               %%%%%%                            
+                            %%%%%  %%%%                          
+                           %%%%     %%%%                         
+                         %%%%         %%%%                       
+                        %%%%           %%%                       
+                       %%%%            %%%%                      
+                      %%%%%             %%%                      
+                      %%%%              %%%%                     
+                      %%%%               %%%                     
+                      %%%%               %%%                     
+                      %%%%               %%%                     
+                       %%%%             %%%                      
+                       %%%%             %%%                      
+     %%%%%%%%%%%        %%%             %%%        %%%%%%%%%%%   
+   %%%%%%%%%%%%%%%%     %%%%           %%%      %%%%%%%%%%%%%%%  
+ %%%%%%         %%%%%    %%%           %%%    %%%%          %%%%%
+%%%%%              %%%   %%%          %%%    %%%             %%%%
+%%%%                %%%   %%%         %%   %%%                %%%
+%%%                   %%   %%        %%%  %%%                 %%%
+%%%                    %%  %%        %%  %%%                  %%%
+%%%%                   %%% %%%      %%%  %%                   %%%
+%%%%%                   %%  %%      %%  %%%                  %%%%
+ %%%%%       %%%%%%%    %%% %%     %%% %%%%     %%%%%%      %%%% 
+  %%%%%%%   %%%          %% %%     %%% %%%         %%%     %%%%  
+   %%%%%%%%%%%           %%%%%%    %%  %%%          %%   %%%%    
+      %%%%%%%%           %%%%%%        %%           %%%%%%%      
+            %%            %%%%%        %%            %%          
+                          %%%%%        %%                        
+                         %%%%%         %%                        
+                         %% %%         %%                        
+                         %% %%         %%%                       
+                       %%%  %%          %%%                      
+                     %%%    %%            %%%%                   
+                           %%                                    
+                          %%         %%                          
+                         %%%%       %%%                          
+                         %%%%%%    %%                            
+                            %%%%%%%%                             
+ %%%                                                        
         `;
         
         const biosLines = [
@@ -442,10 +495,10 @@ Desarrollado en 48h.</div>
             "",
             "Award Plug and Play BIOS Extension v1.0A",
             "Copyright (C) 1998, Award Software, Inc.",
-            "Detecting HDD Primary Master   ... VAO_CORP_HDD_2GB",
-            "Detecting HDD Primary Slave    ... None",
+            "Detecting HDD Primary Master    ... VAO_CORP_HDD_2GB",
+            "Detecting HDD Primary Slave     ... None",
             "Detecting HDD Secondary Master ... CD-ROM 32X",
-            "Detecting HDD Secondary Slave  ... None",
+            "Detecting HDD Secondary Slave   ... None",
             "",
             "Verifying DMI Pool Data...........",
             "Booting from C:...",
@@ -595,7 +648,8 @@ Desarrollado en 48h.</div>
         /* BARRA & MENU */
         function updateTaskList() {
             const list = document.getElementById('task-list'); list.innerHTML = '';
-            ['login-window', 'about-window', 'bibliography-window', 'authors-window', 'recycle-window', 'minesweeper-window'].forEach(id => {
+            // MODIFICADO: Agregado 'readme-window' a la lista de tareas
+            ['login-window', 'about-window', 'bibliography-window', 'authors-window', 'readme-window', 'recycle-window', 'minesweeper-window'].forEach(id => {
                 const el = document.getElementById(id);
                 if(id === 'login-window' || el.style.display === 'flex' || el.dataset.opened === 'true') {
                     if(el.style.display==='flex') el.dataset.opened='true';
@@ -638,6 +692,30 @@ Desarrollado en 48h.</div>
             document.addEventListener('mouseup', () => { const c = document.getElementById('custom-cursor'); c.style.transform = 'translate(-50%, -50%) scale(1)'; c.style.backgroundColor = 'rgba(0,128,128,0.1)'; });
         }
         initGame();
+/*
+                       :::!~!!!!!:.
+                  .xUHWH!! !!?M88WHX:.
+                .X*#M@$!!  !X!M$$$$$$WWx:.
+               :!!!!!!?H! :!$!$$$$$$$$$$8X:
+              !!~  ~:~!! :~!$!#$$$$$$$$$$8X:
+             :!~::!H!<   ~.U$X!?R$$$$$$$$MM!
+             ~!~!!!!~~ .:XW$$$U!!?$$$$$$RMM!
+               !:~~~ .:!M"T#$$$$WX??#MRRMMM!
+               ~?WuxiW*`   `"#$$$$8!!!!??!!!
+             :X- M$$$$       `"T#$T~!8$WUXU~
+            :%`  ~#$$$m:        ~!~ ?$$$$$$
+          :!`.-   ~T$$$$8xx.  .xWW- ~""##*"
+.....   -~~:<` !    ~?T#$$@@W@*?$$      /`
+W$@@M!!! .!~~ !!     .:XUW$W!~ `"~:    :
+#"~~`.:x%`!!  !H:   !WM$$$$Ti.: .!WUn+!`
+:::~:!!`:X~ .: ?H.!u "$$$B$$$!W:U!T$$M~
+.~~   :X@!.-~   ?@WTWo("*$$$W$TH$! `
+Wi.~!X$?!-~    : ?$$$B$Wu("**$RM!
+$R@i.~~ !     :   ~$$$$$B$$en:``
+?MXT@Wx.~    :     ~"##*$$$$M~
+
+*/
     </script>
 </body>
 </html>
+
